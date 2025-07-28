@@ -2,7 +2,7 @@
 
 - [ ] run locally
     - set up script
-- [ ] run in gitpod
+- [x] run in gitpod
     - set up script
     - config for gitpod
 - [ ] run in github code spaces
