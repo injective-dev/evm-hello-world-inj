@@ -2,7 +2,7 @@
 
 Demo repo for Hellow World on Injective, for EVM developers.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/injective-dev/inj-evm-hello-world)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/?autostart=true&editor=code&workspaceClass=g1-standard#https://github.com/injective-dev/inj-evm-hello-world)
 
 <!-- TODO insert github code space links -->
 
