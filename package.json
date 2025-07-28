@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/injective-dev/inj-evm-hello-world/issues"
   },
-  "homepage": "https://github.com/injective-dev/inj-evm-hello-world#readme"
+  "homepage": "https://github.com/injective-dev/inj-evm-hello-world#readme",
+  "dependencies": {
+    "dotenv": "17.2.1"
+  }
 }
