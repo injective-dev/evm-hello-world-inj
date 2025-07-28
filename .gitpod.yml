@@ -1,0 +1,16 @@
+# config for gitpod
+tasks:
+  - name: 'setup'
+    init: |
+      (
+        set -e
+        bash ./util/setup.sh
+        gp sync-done setup_complete
+      )
+  - name: 'main'
+    init: |
+      (
+        set -e
+        gp sync-await setup_complete
+        bash ./util/main.sh
+      )
