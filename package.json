@@ -1,0 +1,25 @@
+{
+  "name": "inj-evm-hello-world",
+  "version": "0.0.0",
+  "description": "Hello World in Injective for EVM developers",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/injective-dev/inj-evm-hello-world.git"
+  },
+  "keywords": [
+    "injective",
+    "tutorial",
+    "hello-world",
+    "evm"
+  ],
+  "author": "bguiz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/injective-dev/inj-evm-hello-world/issues"
+  },
+  "homepage": "https://github.com/injective-dev/inj-evm-hello-world#readme"
+}
