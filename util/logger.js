@@ -10,24 +10,16 @@ import url from 'node:url';
 import dotenv from 'dotenv';
 
 import formatter from './formatter.js';
+import FILE_PATHS from './file-paths.js';
 
 const { stdin, stdout } = node_process;
 const childProcessExec = util.promisify(child_process.exec);
 const hashSha256 = crypto.createHash('sha256');
-const { fileURLToPath } = url;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const FILE_PATHS = {
-    dotEnv: path.resolve(__dirname, '../.env'),
-    configJson: path.resolve(__dirname, '../config.json'),
-    packageJson: path.resolve(__dirname, '../package.json'),
-    gitRefsHeadMain: path.resolve(__dirname, '../.git/refs/heads/main'),
-};
 
 class Logger {
     static #versionStamp = '';
-    step = 0;
+    step = -1;
+    flushedStep = -1;
     steps = [];
     anonId = '';
     configJson = null;
@@ -109,7 +101,6 @@ class Logger {
         if (!msg || typeof msg !== 'string') {
             console.error('No message provided to log command');
         }
-        this.step++;
         const logData = {
             t: Date.now(),
             c: category || 'log',
@@ -117,8 +108,9 @@ class Logger {
             i: this.anonId,
             m: msg,
         };
+        this.step++;
         this.steps.push(logData);
-        this.flush();
+        this.flush(); // intentionally not await-ed even though it is async
         return console.log(...(this.formatForTerminal(category, ...strings)));
     }
 
@@ -126,8 +118,13 @@ class Logger {
      * writes the latest log message to disk
      */
     async flush() {
-        const latestStep = this.steps.at(-1);
-        console.log('TODO flush', latestStep);
+        let out = '';
+        while (this.flushedStep < this.step) {
+            this.flushedStep++;
+            const latestStep = JSON.stringify(this.steps[this.flushedStep], undefined, 0);
+            out += `${latestStep}\n`
+        }
+        await fs.appendFile(FILE_PATHS.logs, out);
     }
 
     /**
@@ -166,6 +163,14 @@ class Logger {
             console.log('↪️', stackFileLine);
         }
         await this.logWait();
+        return ret;
+    }
+
+    logError(...strings) {
+        const ret = this.logBase(
+            'error',
+            ...strings,
+        );
         return ret;
     }
 }
