@@ -2,3 +2,4 @@
 /.env
 /config.json
 /package-lock.json
+/*.test.bak
