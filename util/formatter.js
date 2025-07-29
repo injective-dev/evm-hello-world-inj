@@ -114,6 +114,8 @@ function getStackFileLine() {
 }
 
 export default {
+    ANSI,
+    CHARS,
     forTerminal,
     getStackFileLine,
 };

@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/injective-dev/inj-evm-hello-world#readme",
   "dependencies": {
+    "bip39": "3.1.0",
     "dotenv": "17.2.1"
   }
 }
