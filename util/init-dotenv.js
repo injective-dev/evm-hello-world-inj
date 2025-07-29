@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import readline from 'node:readline/promises';
 import node_process from 'node:process';
+import fs from 'node:fs/promises';
 
 import dotenv from 'dotenv';
 import bip39 from 'bip39';
@@ -34,6 +35,18 @@ async function promptUser() {
     }
 
     console.log('env', env);
+    return env;
+}
+
+async function updateFiles(env) {
+    const out = `
+SEED_PHRASE="${env.SEED_PHRASE}"
+`;
+    await fs.writeFile(
+        FILE_PATHS.dotEnv,
+        out,
+    );
+    console.log('Env vars written.', FILE_PATHS.dotEnv);
 }
 
 async function promptSeedPhrase(seedPhrase) {
@@ -71,4 +84,9 @@ async function promptSeedPhrase(seedPhrase) {
     return seedPhrase;
 }
 
-promptUser();
+async function initDotEnv() {
+    const env = await promptUser();
+    await updateFiles(env);
+}
+
+initDotEnv();
