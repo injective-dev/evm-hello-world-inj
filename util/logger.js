@@ -3,11 +3,13 @@ import util from 'node:util';
 import child_process from 'node:child_process';
 import readline from 'node:readline/promises';
 import node_process from 'node:process';
-import fs from 'fs/promises';
+import fs from 'node:fs/promises';
 import path from 'node:path';
-import url from 'url';
+import url from 'node:url';
 
 import dotenv from 'dotenv';
+
+import formatter from './formatter.js';
 
 const { stdin, stdout } = node_process;
 const childProcessExec = util.promisify(child_process.exec);
@@ -21,34 +23,6 @@ const FILE_PATHS = {
     configJson: path.resolve(__dirname, '../config.json'),
     packageJson: path.resolve(__dirname, '../package.json'),
     gitRefsHeadMain: path.resolve(__dirname, '../.git/refs/heads/main'),
-};
-
-const ANSI = {
-  RESET: '\x1b[0m',
-  BRIGHT: '\x1b[1m',
-  BRIGHT_OFF: '\x1b[21m',
-  UNDERLINE: '\x1b[4m',
-  UNDERLINE_OFF: '\x1b[24m',
-  FG_RED: '\x1b[31m',
-  FG_GREEN: '\x1b[32m',
-  FG_YELLOW: '\x1b[33m',
-  FG_BLUE: '\x1b[34m',
-  FG_PURPLE: '\x1b[35m',
-  FG_CYAN: '\x1b[36m',
-  FG_DEFAULT: '\x1b[39m',
-  CLEAR_LINE: '\x1b[2K',
-  CURSOR_UP_1: '\x1b[1A',
-  CURSOR_LEFT_MAX: '\x1b[9999D',
-};
-
-const CHARS = {
-  HELLIP: '…',
-  START: '🏁',
-  SECTION: '🟣',
-  COMPLETE: '🎉',
-  ERROR: '❌',
-  SUMMARY: '🔢',
-  REMINDER: '🧐',
 };
 
 class Logger {
