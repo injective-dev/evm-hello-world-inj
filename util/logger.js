@@ -85,12 +85,26 @@ class Logger {
     }
 
     /**
+     * If config for `ansiDisabled` is set to `true`, the output is the same as the input strings
+     * Otherwise invokes `formatter.forTerminal`
+     * @param {string} msgType 
+     * @param  {...string} strings 
+     * @returns same output type as `formatter.forTerminal`
+     */
+    formatForTerminal(msgType, ...strings) {
+        if (this.configJson?.ansiDisabled) {
+            return strings;
+        }
+        return formatter.forTerminal(msgType, ...strings);
+    }
+
+    /**
      * Logs a new log message
      * @param {string} category of the log
      * @param  {...any} strings 1 or more strings to output
      * @returns the console.log return value
      */
-    log(category, ...strings) {
+    logBase(category, ...strings) {
         const msg = [...strings][0];
         if (!msg || typeof msg !== 'string') {
             console.error('No message provided to log command');
@@ -105,7 +119,7 @@ class Logger {
         };
         this.steps.push(logData);
         this.flush();
-        return console.log(...strings);
+        return console.log(...(this.formatForTerminal(category, ...strings)));
     }
 
     /**
@@ -114,6 +128,45 @@ class Logger {
     async flush() {
         const latestStep = this.steps.at(-1);
         console.log('TODO flush', latestStep);
+    }
+
+    /**
+     * simply prompt user to hit enter in the terminal
+     */
+    async logWait() {
+        const rlPrompt = readline.createInterface({
+            input: stdin,
+            output: stdout,
+        });
+        await rlPrompt.question('(Hit the "return" key when ready to proceed)');
+        rlPrompt.close();
+
+        // delete the line above
+        if (!this.configJson.ansiDisabled) {
+            stdout.write(...formatter.forTerminal('CLEAR'));
+        }
+    }
+
+    async log(...strings) {
+        const ret = this.logBase(
+            'log',
+            ...strings,
+        );
+        return ret;
+    }
+
+    async logSection(...strings) {
+        console.log('');
+        const ret = this.logBase(
+            'section',
+            ...strings,
+        );
+        const stackFileLine = formatter.getStackFileLine();
+        if (stackFileLine) {
+            console.log('↪️', stackFileLine);
+        }
+        await this.logWait();
+        return ret;
     }
 }
 

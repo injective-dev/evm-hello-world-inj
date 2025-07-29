@@ -76,7 +76,7 @@ test('Logger', async (t) => {
     });
 
     await t.test('logger log', async () => {
-        logger.log('log', 'foo', { bar: 123 });
+        await logger.log('foo', { bar: 123 });
         assert.equal(logger.steps.length, 1, 'array has 1 elements');
     });
 
@@ -89,5 +89,33 @@ test('Logger', async (t) => {
         assert.ok(logData.t <= Date.now(), 'timestamp is set');
         const versionStamp = await Logger.getVersionStamp();
         assert.equal(logData.v, versionStamp, 'version stamp is set');
+    });
+
+    await t.test('formatForTerminal - ANSI enabled behaviour (default)', async () => {
+        const result = logger.formatForTerminal('START', 'Test message');
+        // Should return formatted output since this.configJson would be undefined in static context
+        assert.deepEqual(result, [
+            '🏁\x1b[1m\x1b[32m',
+            'Test message',
+            '\x1b[0m',
+            '…'
+        ], 'apply formatting when ansiDisabled is default (false)');
+    });
+
+    await t.test('formatForTerminal - ANSI disabled behaviour', async () => {
+        t.before(() => {
+            logger.configJson.ansiDisabled = true;
+        });
+
+        t.after(() => {
+            logger.configJson.ansiDisabled = false;
+        });
+
+        // TODO replicate this test with ANSI disable
+        const result = logger.formatForTerminal('START', 'Test message');
+        // Should return formatted output since this.configJson would be undefined in static context
+        assert.deepEqual(result, [
+            'Test message',
+        ], 'do NOT apply formatting when ansiDisabled is true');
     });
 });

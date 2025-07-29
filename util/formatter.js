@@ -36,6 +36,10 @@ const CHARS = {
 function forTerminal(msgType, ...strings) {
     let out = strings;
     switch (msgType?.toUpperCase() || 'LOG') {
+        case 'CLEAR':
+            return [
+                ANSI.CURSOR_UP_1 + ANSI.CLEAR_LINE + ANSI.CURSOR_LEFT_MAX,
+            ];
         case 'START':
             return [
                 CHARS.START + ANSI.BRIGHT + ANSI.FG_GREEN,
@@ -99,6 +103,17 @@ function forTerminal(msgType, ...strings) {
     return out;
 }
 
+function getStackFileLine() {
+    const out = new Error()?.stack
+        ?.split('at ')?.[3]
+        ?.trim()
+        ?.split(' ')?.[1]
+        ?.slice(1, -1)
+        ?.trim();
+    return out;
+}
+
 export default {
     forTerminal,
+    getStackFileLine,
 };
