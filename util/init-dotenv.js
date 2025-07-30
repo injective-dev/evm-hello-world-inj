@@ -19,26 +19,39 @@ async function promptUser() {
         path: FILE_PATHS.dotEnv,
         processEnv: env,
     });
+    const configJson = await fs.readFile(
+        FILE_PATHS.configJson,
+    );
 
     let {
         SEED_PHRASE,
     } = env;
+    let {
+        rpcUrl,
+    } = configJson;
 
     while (true) {
         logger.logSection('Please enter the requested values to populate your .env and other config files.');
 
         env.SEED_PHRASE = await promptSeedPhrase(SEED_PHRASE);
+        configJson.rpcUrl = await promptRpcUrl(rpcUrl);
 
-        if (env.SEED_PHRASE) {
+        if (
+            env.SEED_PHRASE &&
+            configJson.rpcUrl
+        ) {
             break;
         }
     }
 
     console.log('env', env);
-    return env;
+    return {
+        env,
+        configJson,
+    };
 }
 
-async function updateFiles(env) {
+async function updateFiles({ env, configJson }) {
     const out = `
 SEED_PHRASE="${env.SEED_PHRASE}"
 `;
@@ -84,9 +97,44 @@ async function promptSeedPhrase(seedPhrase) {
     return seedPhrase;
 }
 
+async function promptRpcUrl(rpcUrl) {
+    let valid = false;
+    logger.log('Enter a JSON-RPC URL endpoint');
+    while (!valid) {
+        if (rpcUrl) {
+            logger.log(`Current: "${rpcUrl}"`);
+            logger.log('(enter blank to re-use the above value)');
+        } else {
+            logger.log('(enter "new" to use the default value)');
+        }
+        const rlPrompt = readline.createInterface({
+            input: stdin,
+            output: stdout,
+        });
+        const input = await rlPrompt.question('> ');
+        rlPrompt.close();
+        if (input === 'new') {
+            // use default if none is input
+            rpcUrl = 'https://k8s.testnet.json-rpc.injective.network/';
+        } else if (input) {
+            // use the input value
+            rpcUrl = input;
+        }
+
+        // validate RPC URL
+        valid = rpcUrl.match(/^https?\:\/\/.*$/);
+
+        if (!valid) {
+            logger.logError('Invalid RPC URL, please try again.', rpcUrl);
+        }
+    }
+
+    return seedPhrase;
+}
+
 async function initDotEnv() {
-    const env = await promptUser();
-    await updateFiles(env);
+    const results = await promptUser();
+    await updateFiles(results);
 }
 
 initDotEnv();
