@@ -19,9 +19,10 @@ async function promptUser() {
         path: FILE_PATHS.dotEnv,
         processEnv: env,
     });
-    const configJson = await fs.readFile(
+    const configJsonStr = await fs.readFile(
         FILE_PATHS.configJson,
     );
+    const configJson = JSON.parse(configJsonStr);
 
     let {
         SEED_PHRASE,
@@ -45,6 +46,7 @@ async function promptUser() {
     }
 
     console.log('env', env);
+    console.log('configJson', configJson);
     return {
         env,
         configJson,
@@ -52,14 +54,21 @@ async function promptUser() {
 }
 
 async function updateFiles({ env, configJson }) {
-    const out = `
+    const dotEnvStr = `
 SEED_PHRASE="${env.SEED_PHRASE}"
 `;
     await fs.writeFile(
         FILE_PATHS.dotEnv,
-        out,
+        dotEnvStr,
     );
     console.log('Env vars written.', FILE_PATHS.dotEnv);
+
+    const configJsonStr = JSON.stringify(configJson, undefined, 2);
+    await fs.writeFile(
+        FILE_PATHS.configJson,
+        configJsonStr,
+    );
+    console.log('Env vars written.', FILE_PATHS.configJson);
 }
 
 async function promptSeedPhrase(seedPhrase) {
@@ -129,7 +138,7 @@ async function promptRpcUrl(rpcUrl) {
         }
     }
 
-    return seedPhrase;
+    return rpcUrl;
 }
 
 async function initDotEnv() {
