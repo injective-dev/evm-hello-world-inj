@@ -12,6 +12,7 @@ import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
 
 const logger = new Logger();
+await logger.init();
 
 async function promptUser() {
     const env = {};
@@ -19,37 +20,41 @@ async function promptUser() {
         path: FILE_PATHS.dotEnv,
         processEnv: env,
     });
-    const configJsonStr = await fs.readFile(
-        FILE_PATHS.configJson,
-    );
-    const configJson = JSON.parse(configJsonStr);
 
     let {
         SEED_PHRASE,
     } = env;
     let {
         rpcUrl,
-    } = configJson;
+    } = logger.configJson;
 
     while (true) {
         logger.logSection('Please enter the requested values to populate your .env and other config files.');
 
-        env.SEED_PHRASE = await promptSeedPhrase(SEED_PHRASE);
-        configJson.rpcUrl = await promptRpcUrl(rpcUrl);
+        env.SEED_PHRASE = await promptInput(SEED_PHRASE, {
+            inputName: 'BIP39 seed phrase',
+            defaultValueFn: () => (bip39.generateMnemonic(128)),
+            validateValueFn: (value) => (bip39.validateMnemonic(value)),
+        });
+        logger.configJson.rpcUrl = await promptInput(rpcUrl, {
+            inputName: 'JSON-RPC endpoint URL',
+            defaultValueFn: () => ('https://k8s.testnet.json-rpc.injective.network/'),
+            validateValueFn: (value) => (typeof value === 'string' && value.match(/^https?\:\/\/.*$/)),
+        });
 
         if (
             env.SEED_PHRASE &&
-            configJson.rpcUrl
+            logger.configJson.rpcUrl
         ) {
             break;
         }
     }
 
     console.log('env', env);
-    console.log('configJson', configJson);
+    console.log('configJson', logger.configJson);
     return {
         env,
-        configJson,
+        configJson: logger.configJson,
     };
 }
 
@@ -71,74 +76,44 @@ SEED_PHRASE="${env.SEED_PHRASE}"
     console.log('Env vars written.', FILE_PATHS.configJson);
 }
 
-async function promptSeedPhrase(seedPhrase) {
+async function promptInput(value, {
+    inputName,
+    defaultValueFn,
+    validateValueFn,
+}) {
     let valid = false;
-    logger.log('Enter a BIP-39 seed phrase');
+    logger.log(`Enter value for ${inputName}`);
     while (!valid) {
-        if (seedPhrase) {
-            logger.log(`Current: "${seedPhrase}"`);
+        if (value) {
+            logger.log(`Current: "${value}"`);
             logger.log('(enter blank to re-use the above value)');
+            logger.log('(OR enter "new" to use a default value or generate a new value)');
         } else {
-            logger.log('(enter "new" value generate a new one at random)');
+            logger.log('(enter "new" to use a default value or generate a new value)');
         }
         const rlPrompt = readline.createInterface({
             input: stdin,
             output: stdout,
         });
-        const inputSeedPhrase = await rlPrompt.question('> ');
+        const inputValue = await rlPrompt.question('> ');
         rlPrompt.close();
-        if (inputSeedPhrase === 'new') {
+        if (inputValue === 'new') {
             // generate seed phrase if none is input
-            seedPhrase = bip39.generateMnemonic(128);
-        } else if (inputSeedPhrase) {
+            value = defaultValueFn();
+        } else if (inputValue) {
             // use the input seed phrase
-            seedPhrase = inputSeedPhrase;
+            value = inputValue;
         }
 
         // validate seed phrase
-        valid = bip39.validateMnemonic(seedPhrase);
+        valid = validateValueFn(value);
 
         if (!valid) {
-            logger.logError('Invalid BIP-39 seed phrase, please try again.', seedPhrase);
+            logger.logError('Invalid BIP-39 seed phrase, please try again.', value);
         }
     }
 
-    return seedPhrase;
-}
-
-async function promptRpcUrl(rpcUrl) {
-    let valid = false;
-    logger.log('Enter a JSON-RPC URL endpoint');
-    while (!valid) {
-        if (rpcUrl) {
-            logger.log(`Current: "${rpcUrl}"`);
-            logger.log('(enter blank to re-use the above value)');
-        } else {
-            logger.log('(enter "new" to use the default value)');
-        }
-        const rlPrompt = readline.createInterface({
-            input: stdin,
-            output: stdout,
-        });
-        const input = await rlPrompt.question('> ');
-        rlPrompt.close();
-        if (input === 'new') {
-            // use default if none is input
-            rpcUrl = 'https://k8s.testnet.json-rpc.injective.network/';
-        } else if (input) {
-            // use the input value
-            rpcUrl = input;
-        }
-
-        // validate RPC URL
-        valid = rpcUrl.match(/^https?\:\/\/.*$/);
-
-        if (!valid) {
-            logger.logError('Invalid RPC URL, please try again.', rpcUrl);
-        }
-    }
-
-    return rpcUrl;
+    return value;
 }
 
 async function initDotEnv() {
