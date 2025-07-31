@@ -25,7 +25,9 @@
   },
   "homepage": "https://github.com/injective-dev/inj-evm-hello-world#readme",
   "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "6.0.0",
     "bip39": "3.1.0",
-    "dotenv": "17.2.1"
+    "dotenv": "17.2.1",
+    "hardhat": "2.26.0"
   }
 }

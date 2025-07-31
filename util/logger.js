@@ -13,7 +13,6 @@ import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
 
 const { stdin, stdout } = node_process;
-const childProcessExec = util.promisify(child_process.exec);
 const hashSha256 = crypto.createHash('sha256');
 
 class Logger {
