@@ -41,6 +41,8 @@ function forTerminal(msgType, ...strings) {
                 ANSI.CURSOR_UP_1 + ANSI.CLEAR_LINE + ANSI.CURSOR_LEFT_MAX,
             ];
         case 'START':
+        case 'SETUPBEGIN':
+        case 'SETUPEND':
             return [
                 CHARS.START + ANSI.BRIGHT + ANSI.FG_GREEN,
                 ...strings,

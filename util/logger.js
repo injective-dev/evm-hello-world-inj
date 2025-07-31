@@ -23,12 +23,31 @@ class Logger {
     steps = [];
     anonId = '';
     configJson = null;
+    #initHasBeenCalled = false;
 
+    /**
+     * You **must** await `init` **before** using logger.
+     *
+     * Example:
+     * ```js
+     * const logger = new Logger();
+     * await logger.init();
+     * /// ... do things with logger
+     * ```
+     */
     constructor() {
         this.init();
     }
 
+    /**
+     * Logger obtains its version stamp and anonymous ID
+     * @returns nil
+     */
     async init() {
+        if (this.#initHasBeenCalled) {
+            return;
+        }
+        this.#initHasBeenCalled = true;
         await Logger.getVersionStamp();
         const configJsonStr = await fs.readFile(
             FILE_PATHS.configJson,
@@ -147,6 +166,22 @@ class Logger {
     async log(...strings) {
         const ret = this.logBase(
             'log',
+            ...strings,
+        );
+        return ret;
+    }
+
+    async logSetupBegin(...strings) {
+        const ret = this.logBase(
+            'setupBegin',
+            ...strings,
+        );
+        return ret;
+    }
+
+    async logSetupEnd(...strings) {
+        const ret = this.logBase(
+            'setupEnd',
             ...strings,
         );
         return ret;

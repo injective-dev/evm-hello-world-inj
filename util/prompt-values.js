@@ -144,6 +144,7 @@ async function promptRpcUrl(rpcUrl) {
 async function initDotEnv() {
     const results = await promptUser();
     await updateFiles(results);
+    await logger.logSetupEnd('Set up complete!');
 }
 
 initDotEnv();
