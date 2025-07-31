@@ -40,9 +40,8 @@ function forTerminal(msgType, ...strings) {
             return [
                 ANSI.CURSOR_UP_1 + ANSI.CLEAR_LINE + ANSI.CURSOR_LEFT_MAX,
             ];
-        case 'START':
         case 'SETUPBEGIN':
-        case 'SETUPEND':
+        case 'SCRIPTBEGIN':
             return [
                 CHARS.START + ANSI.BRIGHT + ANSI.FG_GREEN,
                 ...strings,
@@ -63,7 +62,8 @@ function forTerminal(msgType, ...strings) {
                 ANSI.RESET,
                 CHARS.HELLIP,
             ];
-        case 'COMPLETE':
+        case 'SETUPEND':
+        case 'SCRIPTEND':
             return [
                 CHARS.COMPLETE + ANSI.BRIGHT + ANSI.FG_GREEN,
                 ...strings,

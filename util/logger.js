@@ -36,7 +36,7 @@ class Logger {
      * ```
      */
     constructor() {
-        this.init();
+        // this.init();
     }
 
     /**
@@ -182,6 +182,22 @@ class Logger {
     async logSetupEnd(...strings) {
         const ret = this.logBase(
             'setupEnd',
+            ...strings,
+        );
+        return ret;
+    }
+
+    async logScriptBegin(...strings) {
+        const ret = this.logBase(
+            'scriptBegin',
+            ...strings,
+        );
+        return ret;
+    }
+
+    async logScriptEnd(...strings) {
+        const ret = this.logBase(
+            'scriptEnd',
             ...strings,
         );
         return ret;
