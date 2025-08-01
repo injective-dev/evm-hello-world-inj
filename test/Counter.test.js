@@ -1,10 +1,10 @@
-const { expect } = require('chai');
+import { expect } from 'chai';
 
 describe('Counter', function () {
   let counter;
 
   before(async function () {
-    Counter = await ethers.getContractFactory('Counter');
+    const Counter = await ethers.getContractFactory('Counter');
     counter = await Counter.deploy();
     await counter.waitForDeployment();
   });
