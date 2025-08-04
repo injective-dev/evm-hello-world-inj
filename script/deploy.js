@@ -1,4 +1,8 @@
 async function main() {
+    const [defaultSigner] = await ethers.getSigners();
+    const defaultSignerAddress = await defaultSigner.getAddress();
+    console.log('defaultSignerAddress', defaultSignerAddress);
+
     const Counter = await ethers.getContractFactory('Counter');
     const counter = await Counter.deploy({
         gasPrice: 160e6,

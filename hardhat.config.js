@@ -3,13 +3,28 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+let accounts;
+if (process.env.PRIVATE_KEY) {
+  accounts = [process.env.PRIVATE_KEY];
+}
+else if (process.env.SEED_PHRASE) {
+  accounts = {
+    mnemonic: process.env.SEED_PHRASE,
+    path: "m/44'/60'/0'/0",
+    initialIndex: 0,
+    count: 5,
+  };
+} else {
+  accounts = [];
+}
+
 /** @type import('hardhat/config').HardhatUserConfig */
 export default {
   solidity: '0.8.28',
   networks: {
     inj_testnet: {
       url: process.env.INJ_TESTNET_RPC_URL || 'https://k8s.testnet.json-rpc.injective.network/',
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      accounts,
       chainId: 1439,
     },
   },

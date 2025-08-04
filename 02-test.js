@@ -1,12 +1,10 @@
 #!/usr/bin/env node
 import node_util from 'node:util';
 import node_child_process from 'node:child_process';
-import node_process from 'node:process';
 
 import { Logger } from './util/logger.js';
 
 const childProcessExec = node_util.promisify(node_child_process.exec);
-// const { stdin, stdout } = node_process;
 const logger = new Logger();
 await logger.init();
 
