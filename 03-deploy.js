@@ -5,7 +5,7 @@ import node_child_process from 'node:child_process';
 import {
     HDNodeWallet as EthersHDNodeWallet,
     JsonRpcProvider as EthersJsonRpcProvider,
-    Mnemonic,
+    Mnemonic as EthersMnemonic,
 } from 'ethers';
 import dotenv from 'dotenv';
 
@@ -26,8 +26,8 @@ async function step03Deploy() {
     // work out what the EVM address of the account is
     const hdPath = "m/44'/60'/0'/0";
     const seedPhrase = processEnv.SEED_PHRASE;
-    const mnemonic = Mnemonic.fromPhrase(seedPhrase);
-    const hdWalletNode = EthersHDNodeWallet.fromMnemonic(mnemonic, "m/44'/60'/0'/0");
+    const mnemonic = EthersMnemonic.fromPhrase(seedPhrase);
+    const hdWalletNode = EthersHDNodeWallet.fromMnemonic(mnemonic, hdPath);
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
     logger.log('EVM address of deployer account', address);
