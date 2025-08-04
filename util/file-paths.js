@@ -13,6 +13,7 @@ const FILE_PATHS = {
     packageJson: path.resolve(__dirname, '../package.json'),
     logs: path.resolve(__dirname, '../logs.json.txt'),
     gitRefsHeadMain: path.resolve(__dirname, '../.git/refs/heads/main'),
+    counterDeploymentJson: path.resolve(__dirname, '../cache/Counter.deployment.json'),
 };
 
 export default FILE_PATHS;
