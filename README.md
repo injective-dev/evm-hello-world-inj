@@ -11,12 +11,10 @@ Demo repo for Hello World on Injective, for EVM developers.
 This is a demo repo intended to accompany the following series of tutorials:
 
 * [Setup Hardhat and compile a smart contract](https://docs.injective.network/developers-evm/smart-contracts/compile-hardhat)
-<!--
 * [Test a smart contract using Hardhat](https://docs.injective.network/developers-evm/smart-contracts/test-hardhat)
 * [Deploy a smart contract using Hardhat](https://docs.injective.network/developers-evm/smart-contracts/deploy-hardhat)
 * [Verify a smart contract using Hardhat](https://docs.injective.network/developers-evm/smart-contracts/verify-hardhat)
 * [Interact with a smart contract using Hardhat](https://docs.injective.network/developers-evm/smart-contracts/interact-hardhat)
--->
 
 <!-- To watch a recorded demonstration, view on [youtube.com](...). -->
 
