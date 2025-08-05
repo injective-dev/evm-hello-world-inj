@@ -28,13 +28,15 @@ async function step04Verify() {
     await logger.logSection('Verify smart contract', 'npx hardhat verify --network inj_testnet ${SC_ADDRESS}');
 
     const scAddress = counterDeploymentJson.deployedAddress;
-    const command = `npx hardhat verify --network inj_testnet ${scAddress}`;
+    const command = `npx hardhat verify --force --network inj_testnet ${scAddress}`;
     await logger.log(`$ ${command}`, "\n...")
 
     const { stdout } = await childProcessExec(command);
     console.log(stdout);
 
-    await logger.log('Verify successful!');
+    const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_source_code`;
+    const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
+    await logger.log('Verify successful!', ...explorerUrlAnsi);
 }
 
 step04Verify().then(async () => {

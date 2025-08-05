@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import node_util from 'node:util';
+import node_fs from 'node:fs/promises';
 import node_child_process from 'node:child_process';
 
 import {
@@ -9,6 +10,7 @@ import {
 } from 'ethers';
 import dotenv from 'dotenv';
 
+import FILE_PATHS from './util/file-paths.js';
 import { Logger } from './util/logger.js';
 
 const childProcessExec = node_util.promisify(node_child_process.exec);
@@ -52,7 +54,15 @@ async function step03Deploy() {
     const { stdout } = await childProcessExec('npx hardhat run script/deploy.js --network inj_testnet');
     console.log(stdout);
 
-    await logger.log('Test successful!');
+    await logger.logSection('Load deployment data');
+    const counterDeploymentJsonStr =
+        await node_fs.readFile(FILE_PATHS.counterDeploymentJson);
+    const counterDeploymentJson = JSON.parse(counterDeploymentJsonStr);
+    const scAddress = counterDeploymentJson.deployedAddress;
+
+    const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract`;
+    const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
+    await logger.log('Deploy successful!', ...explorerUrlAnsi);
 }
 
 step03Deploy().then(async () => {
