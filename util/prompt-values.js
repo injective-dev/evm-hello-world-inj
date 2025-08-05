@@ -8,7 +8,6 @@ import bip39 from 'bip39';
 
 const { stdin, stdout } = node_process;
 import { Logger } from './logger.js';
-import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
 
 const logger = new Logger();
@@ -23,10 +22,8 @@ async function promptUser() {
 
     let {
         SEED_PHRASE,
+        INJ_TESTNET_RPC_URL,
     } = env;
-    let {
-        rpcUrl,
-    } = logger.configJson;
 
     while (true) {
         logger.logSection('Please enter the requested values to populate your .env and other config files.');
@@ -36,7 +33,7 @@ async function promptUser() {
             defaultValueFn: () => (bip39.generateMnemonic(128)),
             validateValueFn: (value) => (bip39.validateMnemonic(value)),
         });
-        logger.configJson.rpcUrl = await promptInput(rpcUrl, {
+        env.INJ_TESTNET_RPC_URL = await promptInput(INJ_TESTNET_RPC_URL, {
             inputName: 'JSON-RPC endpoint URL',
             defaultValueFn: () => ('https://k8s.testnet.json-rpc.injective.network/'),
             validateValueFn: (value) => (typeof value === 'string' && value.match(/^https?\:\/\/.*$/)),
@@ -44,7 +41,7 @@ async function promptUser() {
 
         if (
             env.SEED_PHRASE &&
-            logger.configJson.rpcUrl
+            env.INJ_TESTNET_RPC_URL
         ) {
             break;
         }
@@ -61,19 +58,13 @@ async function promptUser() {
 async function updateFiles({ env, configJson }) {
     const dotEnvStr = `
 SEED_PHRASE="${env.SEED_PHRASE}"
+INJ_TESTNET_RPC_URL="${env.INJ_TESTNET_RPC_URL}"
 `;
     await fs.writeFile(
         FILE_PATHS.dotEnv,
         dotEnvStr,
     );
-    console.log('Env vars written.', FILE_PATHS.dotEnv);
-
-    const configJsonStr = JSON.stringify(configJson, undefined, 2);
-    await fs.writeFile(
-        FILE_PATHS.configJson,
-        configJsonStr,
-    );
-    console.log('Env vars written.', FILE_PATHS.configJson);
+    console.log('env vars written.', FILE_PATHS.dotEnv);
 }
 
 async function promptInput(value, {
