@@ -1,13 +1,7 @@
 import crypto from 'node:crypto';
-import util from 'node:util';
-import child_process from 'node:child_process';
 import readline from 'node:readline/promises';
 import node_process from 'node:process';
 import fs from 'node:fs/promises';
-import path from 'node:path';
-import url from 'node:url';
-
-import dotenv from 'dotenv';
 
 import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
