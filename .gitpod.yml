@@ -5,6 +5,7 @@ tasks:
       (
         set -e
         gp sync-await setup_complete
+        gp tasks stop "$( gp tasks list --no-color | grep 'setup' | awk '{print $2}' )"
         bash ./util/main.sh
       )
   - name: 'setup'
@@ -13,4 +14,5 @@ tasks:
         set -e
         bash ./util/setup.sh
         gp sync-done setup_complete
+        exit
       )
