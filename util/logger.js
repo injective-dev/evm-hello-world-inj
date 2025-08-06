@@ -128,6 +128,9 @@ class Logger {
         this.step++;
         this.steps.push(logData);
         this.flush(); // intentionally not await-ed even though it is async
+        if (!msg) {
+            return;
+        }
         return console.log(...(this.formatForTerminal(category, ...strings)));
     }
 
