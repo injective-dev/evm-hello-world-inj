@@ -1,12 +1,9 @@
 #!/usr/bin/env node
-import readline from 'node:readline/promises';
-import node_process from 'node:process';
 import fs from 'node:fs/promises';
 
 import dotenv from 'dotenv';
 import bip39 from 'bip39';
 
-const { stdin, stdout } = node_process;
 import { Logger } from './logger.js';
 import FILE_PATHS from './file-paths.js';
 
@@ -82,12 +79,7 @@ async function promptInput(value, {
         } else {
             logger.log('(enter "new" to use a default value or generate a new value)');
         }
-        const rlPrompt = readline.createInterface({
-            input: stdin,
-            output: stdout,
-        });
-        const inputValue = await rlPrompt.question('> ');
-        rlPrompt.close();
+        const inputValue = await logger.askQuestion();
         if (inputValue === 'new') {
             // generate seed phrase if none is input
             value = defaultValueFn();

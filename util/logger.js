@@ -157,12 +157,7 @@ class Logger {
      */
     async logWait() {
         this.logBase('waitBegin');
-        const rlPrompt = readline.createInterface({
-            input: stdin,
-            output: stdout,
-        });
-        await rlPrompt.question('(Hit the "return" key when ready to proceed)');
-        rlPrompt.close();
+        await this.askQuestion('(Hit the "return" key when ready to proceed)');
 
         // delete the line above
         if (!this.configJson.ansiDisabled) {
@@ -239,6 +234,16 @@ class Logger {
             ...strings,
         );
         return ret;
+    }
+
+    async askQuestion(prompt = '> ') {
+        const rlPrompt = readline.createInterface({
+            input: stdin,
+            output: stdout,
+        });
+        const inputValue = await rlPrompt.question(prompt);
+        rlPrompt.close();
+        return inputValue;
     }
 }
 
