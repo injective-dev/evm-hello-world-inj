@@ -30,7 +30,9 @@ async function step00Fund() {
     const hdWalletNode = EthersHDNodeWallet.fromMnemonic(mnemonic, hdPath);
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
-    logger.log('EVM address of deployer account', address);
+    logger.log('EVM address of account', address);
+    const addressUrl = logger.formatForTerminal('url', `https://blockscout.injective.network/address/${address}`);
+    logger.log('Account in explorer:', ...addressUrl);
     const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
     logger.log('Injective Testnet Faucet:', ...faucetUrl);
 
