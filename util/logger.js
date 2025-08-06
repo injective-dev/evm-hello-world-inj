@@ -109,7 +109,7 @@ class Logger {
      * @returns the console.log return value
      */
     logBase(category, ...strings) {
-        const msg = [...strings][0];
+        const [msg, ...restOfMsgs] = [...strings];
         if (
             category !== 'waitBegin' &&
             category !== 'waitEnd'
@@ -131,7 +131,9 @@ class Logger {
         if (!msg) {
             return;
         }
-        return console.log(...(this.formatForTerminal(category, ...strings)));
+        return console.log(
+            ...(this.formatForTerminal(category, msg)),
+            ...restOfMsgs);
     }
 
     /**
