@@ -1,10 +1,6 @@
 #!/usr/bin/env node
-import node_util from 'node:util';
-import node_child_process from 'node:child_process';
-
 import { Logger } from './util/logger.js';
 
-const childProcessExec = node_util.promisify(node_child_process.exec);
 const logger = new Logger();
 await logger.init();
 
@@ -13,10 +9,7 @@ async function step02Test() {
 
     await logger.logSection('Run test suite', 'npx hardhat test');
 
-    await logger.log('$ npx hardhat test', "\n...")
-
-    const { stdout } = await childProcessExec('npx hardhat test');
-    console.log(stdout);
+    await logger.logProcess('npx hardhat test');
 
     await logger.log('Test successful!');
 }

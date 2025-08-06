@@ -1,6 +1,4 @@
 #!/usr/bin/env node
-import node_util from 'node:util';
-import node_child_process from 'node:child_process';
 import node_fs from 'node:fs/promises';
 
 import dotenv from 'dotenv';
@@ -8,7 +6,6 @@ import dotenv from 'dotenv';
 import FILE_PATHS from './util/file-paths.js';
 import { Logger } from './util/logger.js';
 
-const childProcessExec = node_util.promisify(node_child_process.exec);
 const processEnv = {};
 dotenv.config({
     processEnv,
@@ -29,10 +26,7 @@ async function step04Verify() {
 
     const scAddress = counterDeploymentJson.deployedAddress;
     const command = `npx hardhat verify --force --network inj_testnet ${scAddress}`;
-    await logger.log(`$ ${command}`, "\n...")
-
-    const { stdout } = await childProcessExec(command);
-    console.log(stdout);
+    await logger.logProcess(command);
 
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_source_code`;
     const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);

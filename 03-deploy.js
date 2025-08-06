@@ -1,7 +1,5 @@
 #!/usr/bin/env node
-import node_util from 'node:util';
 import node_fs from 'node:fs/promises';
-import node_child_process from 'node:child_process';
 
 import {
     HDNodeWallet as EthersHDNodeWallet,
@@ -13,7 +11,6 @@ import dotenv from 'dotenv';
 import FILE_PATHS from './util/file-paths.js';
 import { Logger } from './util/logger.js';
 
-const childProcessExec = node_util.promisify(node_child_process.exec);
 const processEnv = {};
 dotenv.config({
     processEnv,
@@ -49,10 +46,7 @@ async function step03Deploy() {
 
     await logger.logSection('Run deploy script', 'npx hardhat run script/deploy.js --network inj_testnet');
 
-    await logger.log('$ npx hardhat run script/deploy.js --network inj_testnet', "\n...")
-
-    const { stdout } = await childProcessExec('npx hardhat run script/deploy.js --network inj_testnet');
-    console.log(stdout);
+    await logger.logProcess('npx hardhat run script/deploy.js --network inj_testnet');
 
     await logger.logSection('Load deployment data');
     const counterDeploymentJsonStr =

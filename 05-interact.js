@@ -1,12 +1,9 @@
 #!/usr/bin/env node
-import node_util from 'node:util';
-import node_child_process from 'node:child_process';
 import node_fs from 'node:fs/promises';
 
 import {
     HDNodeWallet as EthersHDNodeWallet,
     JsonRpcProvider as EthersJsonRpcProvider,
-    JsonRpcSigner as EthersJsonRpcSigner,
     Mnemonic as EthersMnemonic,
     Contract as EthersContract,
 } from 'ethers';
@@ -15,7 +12,6 @@ import dotenv from 'dotenv';
 import FILE_PATHS from './util/file-paths.js';
 import { Logger } from './util/logger.js';
 
-const childProcessExec = node_util.promisify(node_child_process.exec);
 const processEnv = {};
 dotenv.config({
     processEnv,
