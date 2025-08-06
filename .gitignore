@@ -1,9 +1,11 @@
 /node_modules
 /.env
+/.env.*
 /config.json
 /package-lock.json
 /*.test.bak
 /logs.json.txt
+/logs.*.json.txt
 
 # Hardhat files
 /cache

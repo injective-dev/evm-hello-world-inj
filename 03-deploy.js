@@ -21,7 +21,7 @@ await logger.init();
 async function step03Deploy() {
     await logger.logScriptBegin('deploy');
 
-    await logger.logSection('Fund account');
+    await logger.logSection('Check account funds');
     // work out what the EVM address of the account is
     const hdPath = "m/44'/60'/0'/0";
     const seedPhrase = processEnv.SEED_PHRASE;
