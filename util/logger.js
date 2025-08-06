@@ -110,8 +110,13 @@ class Logger {
      */
     logBase(category, ...strings) {
         const msg = [...strings][0];
-        if (!msg || typeof msg !== 'string') {
-            console.error('No message provided to log command');
+        if (
+            category !== 'waitBegin' &&
+            category !== 'waitEnd'
+        ) {
+            if (!msg || typeof msg !== 'string') {
+                console.error('No message provided to log command');
+            }
         }
         const logData = {
             t: Date.now(),
@@ -143,6 +148,7 @@ class Logger {
      * simply prompt user to hit enter in the terminal
      */
     async logWait() {
+        this.logBase('waitBegin');
         const rlPrompt = readline.createInterface({
             input: stdin,
             output: stdout,
@@ -154,6 +160,7 @@ class Logger {
         if (!this.configJson.ansiDisabled) {
             stdout.write(...formatter.forTerminal('CLEAR'));
         }
+        this.logBase('waitEnd');
     }
 
     async log(...strings) {

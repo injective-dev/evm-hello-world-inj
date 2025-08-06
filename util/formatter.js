@@ -40,6 +40,9 @@ function forTerminal(msgType, ...strings) {
             return [
                 ANSI.CURSOR_UP_1 + ANSI.CLEAR_LINE + ANSI.CURSOR_LEFT_MAX,
             ];
+        case 'WAITBEGIN':
+        case 'WAITEND':
+            return [];
         case 'SETUPBEGIN':
         case 'SCRIPTBEGIN':
             return [
