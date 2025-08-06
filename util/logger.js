@@ -1,4 +1,6 @@
 import crypto from 'node:crypto';
+import node_util from 'node:util';
+import node_child_process from 'node:child_process';
 import readline from 'node:readline/promises';
 import node_process from 'node:process';
 import fs from 'node:fs/promises';
@@ -6,6 +8,7 @@ import fs from 'node:fs/promises';
 import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
 
+const childProcessExec = node_util.promisify(node_child_process.exec);
 const { stdin, stdout } = node_process;
 const hashSha256 = crypto.createHash('sha256');
 
@@ -220,6 +223,14 @@ class Logger {
         }
         await this.logWait();
         return ret;
+    }
+
+    async logProcess(command) {
+        await this.log(`$ ${command}`, "\n...");
+        const result = await childProcessExec(command, { stdout, stdin });
+        const { stdout: output } = result;
+        console.log(output);
+        return result;
     }
 
     logError(...strings) {
