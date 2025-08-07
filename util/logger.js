@@ -215,6 +215,8 @@ class Logger {
         const stackFileLine = formatter.getStackFileLine();
         if (stackFileLine) {
             console.log('↪️', stackFileLine);
+            const stackFileLineSansProtocol = stackFileLine.replace('file://', '');
+            await childProcessExec(`code --goto "${stackFileLineSansProtocol}"`, { stdout, stdin });
         }
         await this.logWait();
         return ret;
