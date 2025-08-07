@@ -152,6 +152,15 @@ class Logger {
         await fs.appendFile(FILE_PATHS.logs, out);
     }
 
+    #getStackFileLine() {
+        const stackFileLine = formatter.getStackFileLine();
+        if (stackFileLine) {
+            const stackFileLineSansProtocol = stackFileLine.replace('file://', '');
+            childProcessExec(`code --goto "${stackFileLineSansProtocol}"`, { stdout, stdin });
+        }
+        return stackFileLine;
+    }
+
     /**
      * simply prompt user to hit enter in the terminal
      */
@@ -195,6 +204,7 @@ class Logger {
             'scriptBegin',
             ...strings,
         );
+        this.#getStackFileLine();
         return ret;
     }
 
@@ -203,6 +213,7 @@ class Logger {
             'scriptEnd',
             ...strings,
         );
+        this.#getStackFileLine();
         return ret;
     }
 
@@ -212,12 +223,12 @@ class Logger {
             'section',
             ...strings,
         );
-        const stackFileLine = formatter.getStackFileLine();
+        const stackFileLine = this.#getStackFileLine();
         if (stackFileLine) {
-            console.log('↪️', stackFileLine);
             const stackFileLineSansProtocol = stackFileLine.replace('file://', '');
             await childProcessExec(`code --goto "${stackFileLineSansProtocol}"`, { stdout, stdin });
         }
+        console.log('↪️', stackFileLine);
         await this.logWait();
         return ret;
     }
@@ -235,6 +246,7 @@ class Logger {
             'error',
             ...strings,
         );
+        this.#getStackFileLine();
         return ret;
     }
 

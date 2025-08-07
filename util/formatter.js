@@ -110,7 +110,7 @@ function forTerminal(msgType, ...strings) {
 
 function getStackFileLine() {
     const out = new Error()?.stack
-        ?.split('at ')?.[3]
+        ?.split('at ')?.[4]
         ?.trim()
         ?.split(' ')?.[1]
         ?.slice(1, -1)
