@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+import dotenv from 'dotenv';
+
+import { Logger } from './util/logger.js';
+
+const processEnv = {};
+dotenv.config({
+    processEnv,
+});
+const logger = new Logger();
+await logger.init();
+
+async function step06Stats() {
+    await logger.logScriptBegin('stats');
+
+    await logger.logSection('Load log file');
+
+    await logger.logSection('Your stats');
+
+    await logger.log('Stats successful!');
+}
+
+step06Stats().then(async () => {
+    await logger.logScriptEnd('stats');
+    console.log('You have completed all the steps!');
+}).catch(async (err) => {
+    if (err.stdout || err.stderr) {
+        await logger.logError('error', err.message);
+        console.log(err.stdout);
+        console.log(err.stderr);
+    } else {
+        await logger.logError('error', err.message);
+        console.log(err);
+    }
+});

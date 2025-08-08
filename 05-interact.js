@@ -67,7 +67,7 @@ async function step05Interact() {
 
 step05Interact().then(async () => {
     await logger.logScriptEnd('interact');
-    console.log('You have completed all the steps!');
+    console.log('To continue, run the following command for the next step:\n./06-stats.js');
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('error', err.message);
