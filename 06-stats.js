@@ -17,7 +17,8 @@ async function step06Stats() {
     logger.log('Read log lines', logs.length);
 
     const logsSummary = await logger.logsSummary(logs);
-    console.log(logsSummary);
+    console.log(logsSummary.summary);
+    console.log(logsSummary.summaryText);
 
     await logger.log('Stats successful!');
 }
