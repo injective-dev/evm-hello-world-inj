@@ -44,6 +44,54 @@
 	- [x] create new script
 	- [x] output blockscout URL for account address in output --> `4f0eabe`
 	- [x] refactor 03-deploy to replace this
+- [ ] feedback to engineering that:
+	- faucet needs to be faster to dispense, and
+	- even when there's an error message, blockscout URL should be provided to account
+	- faucet display transaction should show in blockscout (even after the RPC return value shows that the account balance has indeed increased already)
+	- faucet should also include blockscout URL for dispense transaction
 - [ ] setup script
 	- [x] refactor to shift this function to logger --> `f41d44b`
 	- [ ] investigate double input characters upon first prompt --> TODO still unknown, even though now there's only a single instance of `readline` in the entire repo
+- [x] at start of main shell: prompt user to start the first script --> `dc03404`
+- [x] at the end of each script: prompt user to run the command for the next script --> `dc03404`
+- [x] upon each log:
+	- [x] investigate if possible to automate line number when using the `code` command
+		- use `code --goto "${PATH}:${LINE_NUM}:${COLUMN_NUM}"`
+		- note that `file://` must be removed
+	- [x] if possible: scroll the script file to the specific line of code for the log for each section --> `3360e89`
+- [ ]  at the beginning of each script:
+	- [x] open the script file itself in vscode --> `7271477`
+	- [ ] add ability to disable this via a flag in config file
+- [ ] at end of setup script:
+	- [ ] what just happened here: explain the files, where they will be used
+	- [ ] open config.json in vscode
+	- [ ] open .env file in vscode
+- [x] add an 06-stats script
+	- [x] analyse time spent --> `f393787`
+	- [x] read and parse log files for analysis --> `9dca73b`
+	- [x] open the script file itself in vscode --> `7271477`
+	- [x] print human-readable summary --> `b8debc6`
+	- [x] calculations for setup time --> `6de4806`
+	- [ ] include setup buffer time if gitpod is detected
+- [ ] logs from yesterday's stale gitpod image (logs.json.txt)
+	- [x] extract them before it gets deleted
+	- [ ] perform time spent analysis
+	- [ ] hold onto it for later comparison
+- [ ] at end of 01-compile:
+	- [ ] open the counter.json artefact 
+	- [ ] what just happened: highlight where the ABI is, and where the bytecode is
+- [ ]  in middle of 02-test:
+	- [ ] open Counter.test.js
+	- [ ] what just happened: describe the tests in the file
+- [ ] in 03-deploy
+	- [ ] consider moving funding step from 03-deploy to a new 00-fund
+	- [ ] what just happened: after deployment, include explanation for why an unverified contract still shows its source code
+	- [ ] link to `tab=contract_bytcode` blockscout URL
+- [ ] in 04-verify
+	- [ ] after verification, open up the source code of Counter.sol so that it is convenient to compare
+	- [ ] what just happened: after verification, explain what the ABI and source code are
+- [ ] in 05-interact
+	- [ ] do not console.log the full ABI
+	- [ ] what just happened here: for all 3x interactions (query before, transaction, query after)
+	- [ ] rename the outputs to make query before and after more clear
+	- [ ] for the transaction output the blockscout URL instead of the hash
