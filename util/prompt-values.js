@@ -102,7 +102,7 @@ async function promptInput(value, {
 async function initDotEnv() {
     const results = await promptUser();
     await updateFiles(results);
-    await logger.logSetupEnd('Set up complete!');
+    await logger.logSetupEnd('setup', 'Set up complete!');
 }
 
 initDotEnv();

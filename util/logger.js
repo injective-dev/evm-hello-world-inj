@@ -285,6 +285,7 @@ class Logger {
     async logsSummary(logs) {
         const scripts = {};
         const summary = {
+            setupDuration: 0,
             scriptCount: 0,
             totalDuration: 0,
             beginCount: 0,
@@ -292,6 +293,7 @@ class Logger {
             errorCount: 0,
             completionRate: 1,
         };
+        const scriptsSequence = [];
 
         // initial data
         logs.forEach((log) => {
@@ -304,6 +306,7 @@ class Logger {
             };
             let shouldAdd = false;
             switch (log.c) {
+                case 'setupBegin':
                 case 'scriptBegin':
                     script.beginCount++;
                     script.beginCurrent = log.t;
@@ -312,6 +315,7 @@ class Logger {
                     summary.beginTsFirst = Math.min(log.t, (summary.beginTsFirst || Number.MAX_SAFE_INTEGER));
                     shouldAdd = true;
                     break;
+                case 'setupEnd':
                 case 'scriptEnd':
                     script.endCount++;
                     script.totalDurationForComplete = script.totalDurationForComplete + (log.t - script.beginCurrent);
@@ -329,14 +333,21 @@ class Logger {
                     break;
             }
             if (shouldAdd) {
+                if (log.m !== 'setup' && !scripts[log.m]) {
+                    scriptsSequence.push(log.m);
+                }
                 scripts[log.m] = script;
             }
         });
+        console.log({ scriptsSequence });
 
         // aggregate data
         const aggregatedScripts = {};
         const scriptsEntries = Object.entries(scripts);
         scriptsEntries.forEach(([name, script]) => {
+            if (name === 'setup') {
+                return;
+            }
             summary.scriptCount++;
             const {
                 beginCount,
@@ -366,13 +377,20 @@ class Logger {
             summary.errorCount += errorCount;
             aggregatedScripts[name] = aggScript;
         });
+        if (scripts.setup) {
+            summary.setupDuration =
+                scripts.setup.totalDurationForComplete +
+                scripts.setup.totalDurationForError;
+        }
 
         // summary of data in human readable form
         summary.completionRate = Math.round(summary.endCount / summary.beginCount * 1000) / 1000;
         aggregatedScripts.summary = summary;
         aggregatedScripts.summaryText =
 `Summary stats:
-- Total duration: ${(summary.totalDuration / 1000).toFixed(1)}s
+- Setup duration: ${(summary.setupDuration / 1000).toFixed(1)}s
+- Duration for steps: ${(summary.totalDuration / 1000).toFixed(1)}s
+- Steps attempted: ${scriptsSequence.map((s) => (`"${s}"`)).join(', ')}
 - Total scripts attempted: ${summary.scriptCount}
 - Completion rate: ${(summary.completionRate * 100).toFixed(1)}%
 `;
