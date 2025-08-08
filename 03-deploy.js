@@ -66,11 +66,11 @@ step03Deploy().then(async () => {
     console.log('To continue, run the following command for the next step:\n./04-verify.js');
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
-        await logger.logError('error', err.message);
+        await logger.logError('deploy', err.message);
         console.log(err.stdout);
         console.log(err.stderr);
     } else {
-        await logger.logError('error', err.message);
+        await logger.logError('deploy', err.message);
         console.log(err);
     }
 });

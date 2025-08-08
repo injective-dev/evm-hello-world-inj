@@ -28,11 +28,11 @@ step06Stats().then(async () => {
     console.log('You have completed all the steps!');
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
-        await logger.logError('error', err.message);
+        await logger.logError('stats', err.message);
         console.log(err.stdout);
         console.log(err.stderr);
     } else {
-        await logger.logError('error', err.message);
+        await logger.logError('stats', err.message);
         console.log(err);
     }
 });

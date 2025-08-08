@@ -18,5 +18,12 @@ step01Compile().then(async () => {
     await logger.logScriptEnd('compile');
     console.log('To continue, run the following command for the next step:\n./02-test.js');
 }).catch(async (err) => {
-    await logger.logError('error', err);
+    if (err.stdout || err.stderr) {
+        await logger.logError('compile', err.message);
+        console.log(err.stdout);
+        console.log(err.stderr);
+    } else {
+        await logger.logError('compile', err.message);
+        console.log(err);
+    }
 });

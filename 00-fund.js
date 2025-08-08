@@ -67,11 +67,11 @@ step00Fund().then(async () => {
     console.log('To continue, run the following command for the next step:\n./01-compile.js');
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
-        await logger.logError('error', err.message);
+        await logger.logError('fund', err.message);
         console.log(err.stdout);
         console.log(err.stderr);
     } else {
-        await logger.logError('error', err.message);
+        await logger.logError('fund', err.message);
         console.log(err);
     }
 });

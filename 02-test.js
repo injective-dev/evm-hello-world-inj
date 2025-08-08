@@ -19,11 +19,11 @@ step02Test().then(async () => {
     console.log('To continue, run the following command for the next step:\n./03-deploy.js');
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
-        await logger.logError('error', err.message);
+        await logger.logError('test', err.message);
         console.log(err.stdout);
         console.log(err.stderr);
     } else {
-        await logger.logError('error');
+        await logger.logError('test');
         console.log(err);
     }
 });
