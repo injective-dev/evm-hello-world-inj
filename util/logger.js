@@ -4,6 +4,7 @@ import node_child_process from 'node:child_process';
 import readline from 'node:readline/promises';
 import node_process from 'node:process';
 import fs from 'node:fs/promises';
+import fs_callbacks from 'node:fs';
 
 import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
@@ -258,6 +259,27 @@ class Logger {
         const inputValue = await rlPrompt.question(prompt);
         rlPrompt.close();
         return inputValue;
+    }
+
+    async logsLoad() {
+        return new Promise((resolve) => {
+            let logs = [];
+            const fileStream = fs_callbacks.createReadStream(FILE_PATHS.logs);
+            const rl = readline.createInterface({
+                input: fileStream,
+                crlfDelay: Infinity,
+            });
+            rl.on('line', (lineStr) => {
+                const log = JSON.parse(lineStr);
+                if (log.c === 'setupBegin') {
+                    logs = []; // discard prior runs, we only want the latest
+                }
+                logs.push(log);
+            });
+            rl.on('close', () => {
+                resolve(logs);
+            });
+        });
     }
 }
 
