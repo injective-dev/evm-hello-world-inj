@@ -92,7 +92,7 @@ async function promptInput(value, {
         valid = validateValueFn(value);
 
         if (!valid) {
-            logger.logError('Invalid BIP-39 seed phrase, please try again.', value);
+            logger.logError('setup', 'Invalid BIP-39 seed phrase, please try again.', value);
         }
     }
 

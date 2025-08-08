@@ -281,6 +281,78 @@ class Logger {
             });
         });
     }
+
+    async logsSummary(logs) {
+        const scripts = {};
+
+        // initial data
+        logs.forEach((log) => {
+            const script = scripts[log.m] || {
+                beginCount: 0,
+                endCount: 0,
+                errorCount: 0,
+                totalDurationForComplete: 0,
+                totalDurationForError: 0,
+            };
+            let shouldAdd = false;
+            switch (log.c) {
+                case 'scriptBegin':
+                    script.beginCount++;
+                    script.beginCurrent = log.t;
+                    script.beginTsFirst = Math.min(log.t, (script.beginTsFirst || Number.MAX_SAFE_INTEGER));
+                    script.beginTsLast = Math.max(log.t, (script.beginTsLast || Number.MIN_SAFE_INTEGER));
+                    shouldAdd = true;
+                    break;
+                case 'scriptEnd':
+                    script.endCount++;
+                    script.totalDurationForComplete = script.totalDurationForComplete + (log.t - script.beginCurrent);
+                    script.endTsFirst = Math.min(log.t, (script.endTsFirst || Number.MAX_SAFE_INTEGER));
+                    script.endTsLast = Math.max(log.t, (script.endTsLast || Number.MIN_SAFE_INTEGER));
+                    shouldAdd = true;
+                    break;
+                case 'error':
+                    script.errorCount++;
+                    script.totalDurationForError = script.totalDurationForError + (log.t - script.beginCurrent);
+                    script.errorTsFirst = Math.min(log.t, (script.errorTsFirst || Number.MAX_SAFE_INTEGER));
+                    script.errorTsLast = Math.max(log.t, (script.errorTsLast || Number.MIN_SAFE_INTEGER));
+                    shouldAdd = true;
+                    break;
+            }
+            if (shouldAdd) {
+                scripts[log.m] = script;
+            }
+        });
+
+        // aggregate data
+        const aggregatedScripts = {};
+        Object.entries(scripts).forEach(([name, script]) => {
+            const {
+                beginCount,
+                endCount,
+                errorCount,
+                totalDurationForComplete,
+                totalDurationForError,
+            } = script;
+            const averageDurationForComplete = (endCount === 0) ?
+                0 :
+                totalDurationForComplete / endCount;
+            const averageDurationForError = (errorCount === 0) ?
+                0 :
+                totalDurationForError / errorCount;
+            const totalDuration = totalDurationForComplete + totalDurationForError;
+            const aggScript = {
+                beginCount,
+                endCount,
+                errorCount,
+                averageDurationForComplete,
+                averageDurationForError,
+                totalDuration,
+            };
+            aggregatedScripts[name] = aggScript;
+        });
+
+        return aggregatedScripts;
+    }
 }
 
 export {

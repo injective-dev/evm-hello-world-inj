@@ -13,12 +13,11 @@ await logger.init();
 async function step06Stats() {
     await logger.logScriptBegin('stats');
 
-    await logger.logSection('Load log file');
     const logs = await logger.logsLoad();
     logger.log('Read log lines', logs.length);
 
-    await logger.logSection('Your stats');
-    // const logsSummary = await logger.logsSummary();
+    const logsSummary = await logger.logsSummary(logs);
+    console.log(logsSummary);
 
     await logger.log('Stats successful!');
 }
