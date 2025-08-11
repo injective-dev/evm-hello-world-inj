@@ -339,7 +339,6 @@ class Logger {
                 scripts[log.m] = script;
             }
         });
-        console.log({ scriptsSequence });
 
         // aggregate data
         const aggregatedScripts = {};
