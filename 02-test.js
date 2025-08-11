@@ -7,7 +7,7 @@ await logger.init();
 async function step02Test() {
     await logger.logScriptBegin('test');
 
-    await logger.logSection('Run test suite', 'npx hardhat test');
+    await logger.logSection('Run test suite', ...logger.formatForTerminal('ITALIC', 'npx hardhat test'));
 
     await logger.logProcess('npx hardhat test');
 

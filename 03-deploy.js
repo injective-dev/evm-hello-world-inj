@@ -46,7 +46,7 @@ async function step03Deploy() {
         throw new Error('Account needs to be funded to continue')
     }
 
-    await logger.logSection('Run deploy script', 'npx hardhat run script/deploy.js --network inj_testnet');
+    await logger.logSection('Run deploy script', ...logger.formatForTerminal('ITALIC', 'npx hardhat run script/deploy.js --network inj_testnet'));
 
     await logger.logProcess('npx hardhat run script/deploy.js --network inj_testnet');
 

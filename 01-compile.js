@@ -7,7 +7,7 @@ await logger.init();
 async function step01Compile() {
     await logger.logScriptBegin('compile');
 
-    await logger.logSection('Run compiler', 'npx hardhat compile');
+    await logger.logSection('Run compiler', ...logger.formatForTerminal('ITALIC', 'npx hardhat compile'));
 
     await logger.logProcess('npx hardhat compile');
 

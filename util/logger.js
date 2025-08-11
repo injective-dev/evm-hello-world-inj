@@ -240,7 +240,7 @@ class Logger {
     }
 
     async logProcess(command) {
-        await this.log(`$ ${command}`, "\n...");
+        await this.log('$ ', ...this.formatForTerminal('BOLD', command), "\n...");
         const result = await childProcessExec(command, { stdout, stdin });
         const { stdout: output } = result;
         console.log(output);

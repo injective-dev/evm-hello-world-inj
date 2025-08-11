@@ -1,6 +1,7 @@
 const ANSI = {
   RESET: '\x1b[0m',
   BRIGHT: '\x1b[1m',
+  EMPHASIS: '\x1b[3m',
   BRIGHT_OFF: '\x1b[21m',
   UNDERLINE: '\x1b[4m',
   UNDERLINE_OFF: '\x1b[24m',
@@ -109,6 +110,12 @@ function forTerminal(msgType, ...strings) {
         case 'BOLD':
             return [
                 ANSI.BRIGHT,
+                ...strings,
+                ANSI.RESET,
+            ];
+        case 'ITALIC':
+            return [
+                ANSI.EMPHASIS,
                 ...strings,
                 ANSI.RESET,
             ];
