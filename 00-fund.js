@@ -30,11 +30,16 @@ async function step00Fund() {
     const hdWalletNode = EthersHDNodeWallet.fromMnemonic(mnemonic, hdPath);
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
-    logger.log('EVM address of account', address);
+    const formattedAddress = logger.formatForTerminal('BOLD', address);
+    logger.log('EVM address of account', ...formattedAddress, '← copy this');
     const addressUrl = logger.formatForTerminal('url', `https://blockscout.injective.network/address/${address}`);
     logger.log('Account in explorer:', ...addressUrl);
     const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
-    logger.log('Injective Testnet Faucet:', ...faucetUrl);
+    logger.log('Injective Testnet Faucet:', ...faucetUrl, '← open this');
+    logger.log('IMPORTANT!',
+        '\n- Please copy the EVM address above, then',
+        '\n- Cmd+Click/Ctrl+Click the faucet URL above, and',
+        '\n- request Testnet INJ before proceeding with the next step.');
 
     await logger.logSection('Continue after funding account');
 
