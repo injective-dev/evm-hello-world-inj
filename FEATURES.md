@@ -32,6 +32,24 @@
 
 ## Specific feature for this Hello World
 
+- [ ] open .env file automatically
+- [ ] for the "run this script next" outputs, highlight file name with different colour
+- [x] remove auto jump to line for logSection, instead only do it on begin --> `b3dbaeb`
+- [ ] for 00-fund, after account lookup include instructions, before "after funding account section"
+- [ ] feedback to engineering that faucet dispense needs to be faster
+- [ ] feedback to engineering that there is a 90s+ delay for account to be funded
+- [ ] when shell command is output, highlight in a different colour
+- [ ] move the logic for waiting for funds from step 0 to step 3
+	- [ ] step 0 just outputs a warning if there are zero funds
+	- [ ] step 3 add the 30s 2nd check logic
+- [ ] step 3 for deploy, link directly to the bytecode tab
+- [ ] step 5 interact don't output full ABI, just truncate
+- [ ] feedback to engineering that transaction doens't appear in block explorer after transaction has happened
+	- [ ] also investigate if there's an additional ethersjs wait needed on the transaction
+- [ ] for 06-stats
+	- [x] remove JS object output --> `205864e`
+	- [ ] completion rate determine why it shows 6/8 instead of 7/8
+	- [ ] convert seconds to minutes in human readable output
 - [x] for logger waits: include timestamps of *start* of wait and *end* of wait --> `58bd164`
 - [x] for all scripts: logs which include a command - change to use a different ANSI colouring --> `b1492c6`
 - [x] for util, add new function to run CLI commands --> `0267e7d`
