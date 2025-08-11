@@ -56,7 +56,7 @@ async function step03Deploy() {
     const counterDeploymentJson = JSON.parse(counterDeploymentJsonStr);
     const scAddress = counterDeploymentJson.deployedAddress;
 
-    const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract`;
+    const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_bytecode`;
     const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
     await logger.log('Deploy successful!', ...explorerUrlAnsi);
 }
