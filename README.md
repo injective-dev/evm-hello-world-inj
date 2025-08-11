@@ -35,6 +35,24 @@ NOTE: This repo is still WIP, and thus some sections may be incomplete.
 
 <!-- TODO -->
 
+## Feedback and Suggestions
+
+Your feedback is welcome!
+Feel free to drop your feedback:
+- Directly to [this Github repo as an issue](https://github.com/injective-dev/evm-hello-world-inj/issues/new/choose)
+- In the Injective [discord forum discussion](https://discord.com/channels/739552603322450092/1404368498742001684/1404368498742001684)
+
+### Self feedback
+
+I've been performing micro DX self-audits on the repo
+with each version released
+so as to keep improving the hello world experience.
+You can watch them below:
+
+`v0.1.0`:
+
+[![](https://i.ytimg.com/vi/APcPHL4_c_U/maxresdefault.jpg)](https://www.youtube.com/watch?v=APcPHL4_c_U)
+
 ## Author
 
 [Brendan Graetz](https://blog.bguiz.com/)
