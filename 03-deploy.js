@@ -36,14 +36,27 @@ async function step03Deploy() {
     // check what its funds are
     const rpcUrl = processEnv.INJ_TESTNET_RPC_URL;
     const rpcProvider = new EthersJsonRpcProvider(rpcUrl);
-    const balance = await rpcProvider.getBalance(address);
-    logger.log('Balance of deployer account', balance);
 
-    // error if funds are zero, otherwise proceeed to next step
+    // check balance (1st time)
+    let balance = await rpcProvider.getBalance(address);
+    logger.log('Balance of account', balance);
+
+    // if funds are zero, wait for an additional 30s before checking again
     if (balance <= 0n) {
-        const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
-        logger.log('Injective Testnet Faucet:', ...faucetUrl);
-        throw new Error('Account needs to be funded to continue')
+        logger.log('Waiting 30s before checking balance again...');
+        await new Promise((resolve) => { setTimeout(resolve, 30e3); });
+
+        // check balance (2nd time)
+        balance = await rpcProvider.getBalance(address);
+        logger.log('Balance of account, 2nd attempt', balance);
+
+        // error if funds are zero, otherwise proceeed to next step
+        if (balance <= 0n) {
+            throw new Error(
+                'Account needs to be funded to continue. ' +
+                'Please repeat the funding step: ./00-fund.js',
+            );
+        }
     }
 
     await logger.logSection('Run deploy script', ...logger.formatForTerminal('ITALIC', 'npx hardhat run script/deploy.js --network inj_testnet'));
@@ -58,7 +71,7 @@ async function step03Deploy() {
 
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_bytecode`;
     const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
-    await logger.log('Deploy successful!', ...explorerUrlAnsi);
+    await logger.log('Deploy completed!', ...explorerUrlAnsi);
 }
 
 step03Deploy().then(async () => {

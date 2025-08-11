@@ -65,7 +65,7 @@ async function step05Interact() {
     const counterValue2 = await counter.value();
     logger.log('Counter value (AFTER transaction)', counterValue2);
 
-    await logger.log('Interact successful!');
+    await logger.log('Interact completed!');
 }
 
 step05Interact().then(async () => {

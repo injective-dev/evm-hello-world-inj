@@ -43,28 +43,26 @@ async function step00Fund() {
 
     await logger.logSection('Continue after funding account');
 
-    // check what its funds are
+    // check balance
     const rpcUrl = processEnv.INJ_TESTNET_RPC_URL;
     const rpcProvider = new EthersJsonRpcProvider(rpcUrl);
 
-    let balance = await rpcProvider.getBalance(address);
-    logger.log('Balance of account', balance);
+    const balance = await rpcProvider.getBalance(address);
+    logger.log('Balance of deployer account', balance);
 
-    // if funds are zero, wait for an additional 30s before checking again
+    // warning if funds are zero, allow proceeding to next step anyway
     if (balance <= 0n) {
-        logger.log('Waiting 30s before checking balance again...');
-        await new Promise((resolve) => { setTimeout(resolve, 30e3); });
-
-        balance = await rpcProvider.getBalance(address);
-        logger.log('Balance of account, 2nd attempt', balance);
-
-        // error if funds are zero, otherwise proceeed to next step
-        if (balance <= 0n) {
-            throw new Error('Account needs to be funded to continue');
-        }
+        // const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
+        logger.log('Injective Testnet Faucet:', ...faucetUrl);
+        logger.log(
+            'Unfunded account',
+            '\n',
+            ...logger.formatForTerminal('ERROR', 'WARNING!'),
+            'this account is not yet funded, please ensure that you have funded it before running ./03-deploy.js',
+        )
     }
 
-    await logger.log('Fund successful!');
+    await logger.log('Fund completed!');
 }
 
 step00Fund().then(async () => {

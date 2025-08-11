@@ -11,7 +11,7 @@ async function step02Test() {
 
     await logger.logProcess('npx hardhat test');
 
-    await logger.log('Test successful!');
+    await logger.log('Test completed!');
 }
 
 step02Test().then(async () => {

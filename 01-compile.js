@@ -11,7 +11,7 @@ async function step01Compile() {
 
     await logger.logProcess('npx hardhat compile');
 
-    await logger.log('Compliation successful!', 'check the "artifacts" directory to see compiled outputs.');
+    await logger.log('Compilation completed!', 'check the "artifacts" directory to see compiled outputs.');
 }
 
 step01Compile().then(async () => {
