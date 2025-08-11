@@ -1,4 +1,3 @@
-
 const ANSI = {
   RESET: '\x1b[0m',
   BRIGHT: '\x1b[1m',
@@ -26,6 +25,26 @@ const CHARS = {
   SUMMARY: '🔢',
   REMINDER: '🧐',
 };
+
+/**
+ * For an input number of milliseconds, returns a string that is either:
+ * (1) seconds with 1 decimal place, e.g.:
+ *  1100 --> "1.1s"
+ * (2) OR minutes with 0 decimal places and seconds with 1 decimal place, e.g.:
+ * 61100 --> "1m 1.1s"
+ * @param {Number} ms a duration in milliseconds
+ * @returns {String} a human readable duration
+ */
+function formatDuration(ms) {
+    const s = ms / 1000;
+    const minutes = Math.floor(s / 60);
+    const seconds = s % 60;
+    if (minutes === 0) {
+        return `${(seconds).toFixed(1)}s`;
+    } else {
+        return `${minutes}m ${(seconds).toFixed(1)}s`;
+    }
+}
 
 /**
  * @param {string} msgType 
@@ -122,5 +141,6 @@ export default {
     ANSI,
     CHARS,
     forTerminal,
+    duration: formatDuration,
     getStackFileLine,
 };

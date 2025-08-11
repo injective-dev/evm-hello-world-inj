@@ -392,8 +392,8 @@ class Logger {
         aggregatedScripts.summary = summary;
         aggregatedScripts.summaryText =
 `Summary stats:
-- Setup duration: ${(summary.setupDuration / 1000).toFixed(1)}s
-- Duration for steps: ${(summary.totalDuration / 1000).toFixed(1)}s
+- Setup duration: ${formatter.duration(summary.setupDuration)}s
+- Duration for steps: ${formatter.duration(summary.totalDuration)}s
 - Steps attempted: ${scriptsSequence.map((s) => (`"${s}"`)).join(', ')}
 - Total scripts attempted: ${summary.scriptCount}
 - Completion rate: ${(summary.completionRate * 100).toFixed(1)}%
