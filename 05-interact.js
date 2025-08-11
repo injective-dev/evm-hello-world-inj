@@ -53,15 +53,17 @@ async function step05Interact() {
 
     await logger.logSection('Query smart contract');
     const counterValue1 = await counter.value();
-    logger.log('counterValue1', counterValue1);
+    logger.log('Counter value (BEFORE transaction)', counterValue1);
 
     await logger.logSection('Transact smart contract');
-    const incrementTx = await counter.increment(1, { gasPrice: 160e6, gasLimit: 2e6 });
-    logger.log('incrementTx.hash', incrementTx.hash);
+    const incrementTx = await counter.increment(7, { gasPrice: 160e6, gasLimit: 2e6 });
+    logger.log('Increment transaction hash', incrementTx.hash);
+    const incrementTxReceipt = await incrementTx.wait(1);
+    logger.log('Increment transaction block number', incrementTxReceipt.blockNumber);
 
     await logger.logSection('Query smart contract again');
     const counterValue2 = await counter.value();
-    logger.log('counterValue2', counterValue2);
+    logger.log('Counter value (AFTER transaction)', counterValue2);
 
     await logger.log('Interact successful!');
 }
