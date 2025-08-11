@@ -70,7 +70,7 @@ async function step05Interact() {
 
 step05Interact().then(async () => {
     await logger.logScriptEnd('interact');
-    console.log('To continue, run the following command for the next step:\n./06-stats.js');
+    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './06-stats.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('interact', err.message);

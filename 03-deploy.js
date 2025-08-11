@@ -63,7 +63,7 @@ async function step03Deploy() {
 
 step03Deploy().then(async () => {
     await logger.logScriptEnd('deploy');
-    console.log('To continue, run the following command for the next step:\n./04-verify.js');
+    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './04-verify.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('deploy', err.message);

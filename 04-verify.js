@@ -35,7 +35,7 @@ async function step04Verify() {
 
 step04Verify().then(async () => {
     await logger.logScriptEnd('verify');
-    console.log('To continue, run the following command for the next step:\n./05-interact.js');
+    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './05-interact.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('verify', err.message);

@@ -69,7 +69,7 @@ async function step00Fund() {
 
 step00Fund().then(async () => {
     await logger.logScriptEnd('fund');
-    console.log('To continue, run the following command for the next step:\n./01-compile.js');
+    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './01-compile.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('fund', err.message);
