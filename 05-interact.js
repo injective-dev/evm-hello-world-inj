@@ -26,11 +26,12 @@ async function step05Interact() {
     const counterDeploymentJsonStr =
         await node_fs.readFile(FILE_PATHS.counterDeploymentJson);
     const counterDeploymentJson = JSON.parse(counterDeploymentJsonStr);
-    console.log(counterDeploymentJson);
+    logger.log('Smart contract adddress', counterDeploymentJson.deployedAddress);
     const counterAbiStr =
         await node_fs.readFile(FILE_PATHS.counterAbi);
     const counterAbi = JSON.parse(counterAbiStr);
-    console.log(counterAbi.abi);
+    const counterAbiFormatted = JSON.stringify(counterAbi.abi).slice(0, 96) + '...';
+    logger.log('Smart contract ABI', counterAbiFormatted);
 
     await logger.logSection('Initialise RPC provider and signer');
     const hdPath = "m/44'/60'/0'/0";
