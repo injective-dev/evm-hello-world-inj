@@ -154,10 +154,9 @@ class Logger {
     }
 
     #getStackFileLine() {
-        const stackFileLine = formatter.getStackFileLine();
+        let stackFileLine = formatter.getStackFileLine();
         if (stackFileLine) {
-            const stackFileLineSansProtocol = stackFileLine.replace('file://', '');
-            childProcessExec(`code --goto "${stackFileLineSansProtocol}"`, { stdout, stdin });
+            stackFileLine = stackFileLine.replace('file://', '');
         }
         return stackFileLine;
     }
@@ -205,7 +204,10 @@ class Logger {
             'scriptBegin',
             ...strings,
         );
-        this.#getStackFileLine();
+        const fileLine = this.#getStackFileLine();
+        if (fileLine) {
+            this.loggerJumpToFileLine(fileLine);
+        }
         return ret;
     }
 
@@ -214,8 +216,15 @@ class Logger {
             'scriptEnd',
             ...strings,
         );
-        this.#getStackFileLine();
         return ret;
+    }
+
+    async loggerJumpToFileLine(fileLine) {
+        if (!fileLine ||
+            typeof fileLine !== 'string') {
+            throw new Error('File line not valid');
+        }
+        await childProcessExec(`code --goto "${fileLine}"`, { stdout, stdin });
     }
 
     async logSection(...strings) {
@@ -224,12 +233,8 @@ class Logger {
             'section',
             ...strings,
         );
-        const stackFileLine = this.#getStackFileLine();
-        if (stackFileLine) {
-            const stackFileLineSansProtocol = stackFileLine.replace('file://', '');
-            await childProcessExec(`code --goto "${stackFileLineSansProtocol}"`, { stdout, stdin });
-        }
-        console.log('↪️', stackFileLine);
+        const fileLine = this.#getStackFileLine();
+        console.log('↪️', fileLine);
         await this.logWait();
         return ret;
     }
