@@ -32,6 +32,11 @@
 
 ## Specific feature for this Hello World
 
+v0.3.1 feedback
+
+- [x] for the setup shell script, npm installation to split into 2 separate batches to reduce time to first interaction --> `9a71b4a`
+	- [x] only install dot env and bip39 before prompting --> `9a71b4a`
+
 v0.2.0 feedback
 
 - [x] remove auto jump to line for logSection, instead only do it on begin --> `b3dbaeb`
