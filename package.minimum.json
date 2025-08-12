@@ -1,0 +1,10 @@
+{
+  "name": "inj-evm-hello-world-minimum-dependencies-for-time-to-first-interaction",
+  "version": "0.0.0",
+  "private": true,
+  "description": "minimum dependencies that need to be installed in order to minimise the time to first interaction in inj-evm-hello-world",
+  "dependencies": {
+    "bip39": "3.1.0",
+    "dotenv": "17.2.1"
+  }
+}

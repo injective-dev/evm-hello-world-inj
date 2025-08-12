@@ -6,6 +6,8 @@
 /*.test.bak
 /logs.json.txt
 /logs.*.json.txt
+/nohup.out
+/package.original.json
 
 # Hardhat files
 /cache
