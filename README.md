@@ -6,6 +6,33 @@ Demo repo for Hello World on Injective, for EVM developers.
 
 <!-- TODO insert github code space links -->
 
+## Time commitment
+
+If you are using Gitpod, this should take you no longer than 10 minutes to complete!
+
+You do **NOT** need to do any of the following:
+
+- Configure an IDE
+- Install dependencies
+- Write any code
+
+All you really need is a browser and a Github account.
+Plus you need to be able to run shell commands.
+
+Note that in the final step, you can see your summary stats,
+which will tell you exactly how long you spent on this.
+For example:
+
+```text
+Summary stats:
+- Setup duration    : 1m 37.4s
+- Duration for steps: 6m 59.2s
+- Steps attempted   : fund (1/2), compile (1/1), test (1/1), deploy (1/1), verify (1/1), interact (1/1)
+- Total attempts    : 6
+- Completion rate   : 85.7%
+```
+
+
 ## Tutorial
 
 This is a demo repo intended to accompany the following series of tutorials:
