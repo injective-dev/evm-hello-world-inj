@@ -338,7 +338,11 @@ class Logger {
                     break;
             }
             if (shouldAdd) {
-                if (log.m !== 'setup' && !scripts[log.m]) {
+                if (
+                    log.m !== 'setup' &&
+                    log.m !== 'stats' &&
+                    !scripts[log.m]
+                ) {
                     scriptsSequence.push(log.m);
                 }
                 scripts[log.m] = script;
@@ -349,7 +353,10 @@ class Logger {
         const aggregatedScripts = {};
         const scriptsEntries = Object.entries(scripts);
         scriptsEntries.forEach(([name, script]) => {
-            if (name === 'setup') {
+            if (
+                name === 'setup' ||
+                name === 'stats'
+            ) {
                 return;
             }
             summary.scriptCount++;
@@ -390,13 +397,20 @@ class Logger {
         // summary of data in human readable form
         summary.completionRate = Math.round(summary.endCount / summary.beginCount * 1000) / 1000;
         aggregatedScripts.summary = summary;
+        const stepsDisplayText = scriptsSequence.map((step) => {
+            const {
+                beginCount,
+                endCount,
+            } = scripts[step];
+            return `${step} (${endCount}/${beginCount})`;
+        }).join(', ');
         aggregatedScripts.summaryText =
 `Summary stats:
-- Setup duration: ${formatter.duration(summary.setupDuration)}s
+- Setup duration    : ${formatter.duration(summary.setupDuration)}s
 - Duration for steps: ${formatter.duration(summary.totalDuration)}s
-- Steps attempted: ${scriptsSequence.map((s) => (`"${s}"`)).join(', ')}
-- Total scripts attempted: ${summary.scriptCount}
-- Completion rate: ${(summary.completionRate * 100).toFixed(1)}%
+- Steps attempted   : ${stepsDisplayText}
+- Total attempts    : ${summary.scriptCount}
+- Completion rate   : ${(summary.completionRate * 100).toFixed(1)}%
 `;
 
         return aggregatedScripts;
