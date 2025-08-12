@@ -77,11 +77,13 @@ async function promptInput(value, {
     logger.log(`Enter value for ${inputName}`);
     while (!valid) {
         if (value) {
-            logger.log(`Current: "${value}"`);
-            logger.log('(enter blank to re-use the above value)');
-            logger.log('(OR enter "new" to use a default value or generate a new value)');
+            console.log(
+                `Current: "${value}"\n`,
+                '(enter blank to re-use the above value)\n',
+                '(OR enter \'new\' to use a default value or generate a new value)',
+            );
         } else {
-            logger.log('(enter "new" to use a default value or generate a new value)');
+            console.log('(enter \'new\' to use a default value or generate a new value)');
         }
         const inputValue = await logger.askQuestion();
         if (inputValue === 'new') {
