@@ -58,6 +58,12 @@ async function step05Interact() {
     await logger.logSection('Transact smart contract');
     const incrementTx = await counter.increment(7, { gasPrice: 160e6, gasLimit: 2e6 });
     logger.log('Increment transaction hash', incrementTx.hash);
+    setTimeout(() => {
+        // print after a second so dev isn't getting bored/ impatient while waiting
+        const explorerUrl = `https://testnet.blockscout.injective.network/tx/${incrementTx.hash}`;
+        const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
+        console.log('Transaction', ...explorerUrlAnsi);
+    }, 1000);
     const incrementTxReceipt = await incrementTx.wait(1);
     logger.log('Increment transaction block number', incrementTxReceipt.blockNumber);
 
