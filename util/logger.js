@@ -113,7 +113,7 @@ class Logger {
      * @returns the console.log return value
      */
     logBase(category, ...strings) {
-        const [msg, ...restOfMsgs] = [...strings];
+        const [msg] = [...strings];
         if (
             category !== 'waitBegin' &&
             category !== 'waitEnd'
@@ -136,8 +136,8 @@ class Logger {
             return;
         }
         return console.log(
-            ...(this.formatForTerminal(category, msg)),
-            ...restOfMsgs);
+            ...(this.formatForTerminal(category, ...strings)),
+        );
     }
 
     /**
@@ -253,6 +253,15 @@ class Logger {
             ...strings,
         );
         this.#getStackFileLine();
+        return ret;
+    }
+
+    logInfoBox(title, ...strings) {
+        const ret = this.logBase(
+            'infoBox',
+            title,
+            ...strings,
+        );
         return ret;
     }
 

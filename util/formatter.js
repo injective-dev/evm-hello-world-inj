@@ -55,70 +55,95 @@ function formatDuration(ms) {
  */
 function forTerminal(msgType, ...strings) {
     let out = strings;
+    const [firstStr, ...restOfStrs] = [...strings];
     switch (msgType?.toUpperCase() || 'LOG') {
         case 'CLEAR':
-            return [
-                ANSI.CURSOR_UP_1 + ANSI.CLEAR_LINE + ANSI.CURSOR_LEFT_MAX,
+            out = [
+                ANSI.CURSOR_UP_1 +
+                ANSI.CLEAR_LINE +
+                ANSI.CURSOR_LEFT_MAX
             ];
+            break;
         case 'WAITBEGIN':
         case 'WAITEND':
-            return [];
+            out = [];
+            break;
         case 'SETUPBEGIN':
         case 'SCRIPTBEGIN':
-            return [
+            out = [
                 CHARS.START + ANSI.BRIGHT + ANSI.FG_GREEN,
-                ...strings,
-                ANSI.RESET,
-                CHARS.HELLIP,
+                firstStr,
+                ANSI.RESET + CHARS.HELLIP,
+                ...restOfStrs,
             ];
+            break;
         case 'SECTION':
-            return [
+            out = [
                 CHARS.SECTION + ANSI.BRIGHT + ANSI.FG_PURPLE,
-                ...strings,
-                ANSI.RESET,
-                CHARS.HELLIP,
+                firstStr,
+                ANSI.RESET + CHARS.HELLIP,
+                ...restOfStrs,
             ];
+            break;
         case 'REMINDER':
-            return [
+            out = [
                 CHARS.REMINDER + ANSI.BRIGHT + ANSI.FG_CYAN,
-                ...strings,
-                ANSI.RESET,
-                CHARS.HELLIP,
+                firstStr,
+                ANSI.RESET + CHARS.HELLIP,
+                ...restOfStrs,
             ];
+            break;
         case 'SETUPEND':
         case 'SCRIPTEND':
-            return [
+            out = [
                 CHARS.COMPLETE + ANSI.BRIGHT + ANSI.FG_GREEN,
-                ...strings,
-                ANSI.RESET,
-                CHARS.HELLIP,
+                firstStr,
+                ANSI.RESET + CHARS.HELLIP,
+                ...restOfStrs,
             ];
+            break;
         case 'ERROR':
-            return [
+            out = [
                 CHARS.ERROR + ANSI.BRIGHT + ANSI.FG_RED,
-                ...strings,
-                ANSI.RESET,
-                CHARS.HELLIP,
+                firstStr,
+                ANSI.RESET + CHARS.HELLIP,
+                ...restOfStrs,
             ];
+            break;
+        case 'INFOBOX':
+            const infoBoxWidth = firstStr.length + 4;
+            const infoBoxHorizLine = ('=').repeat(infoBoxWidth);
+            out = [
+                '\n' + ANSI.FG_CYAN + infoBoxHorizLine + '\n| ' +
+                ANSI.RESET + ANSI.BRIGHT + ANSI.FG_YELLOW + firstStr + ANSI.RESET + ANSI.FG_CYAN  + ' |\n' +
+                infoBoxHorizLine + ANSI.RESET + '\n',
+                ...restOfStrs,
+                ANSI.RESET + ANSI.FG_CYAN + '\n' + infoBoxHorizLine + '\n' + infoBoxHorizLine + '\n' + ANSI.RESET,
+            ];
+            break;
         case 'SUMMARY':
-            return [
+            out = [
                 CHARS.SUMMARY + ANSI.BRIGHT + ANSI.FG_YELLOW,
-                ...strings,
+                ...firstStr,
                 ANSI.RESET,
                 CHARS.HELLIP,
+                ...restOfStrs,
             ];
+            break;
         case 'BOLD':
-            return [
-                ANSI.BRIGHT,
-                ...strings,
-                ANSI.RESET,
-            ];
+            out = strings.map((s) => (
+                ANSI.BRIGHT +
+                s +
+                ANSI.RESET
+            ));
+            break;
         case 'ITALIC':
-            return [
-                ANSI.EMPHASIS,
-                ...strings,
-                ANSI.RESET,
-            ];
+            out = strings.map((s) => (
+                ANSI.EMPHASIS +
+                s +
+                ANSI.RESET
+            ));
+            break;
         case 'URL':
             out = strings.map((s) => (
                 ANSI.UNDERLINE +
