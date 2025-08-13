@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Logger } from './util/logger.js';
+import FILE_PATHS from './util/file-paths.js';
 
 const logger = new Logger();
 await logger.init();
@@ -10,6 +11,9 @@ async function step01Compile() {
     await logger.logSection('Run compiler', ...logger.formatForTerminal('ITALIC', 'npx hardhat compile'));
 
     await logger.logProcess('npx hardhat compile');
+
+    await logger.loggerJumpToFileLine(FILE_PATHS.counterDeploymentJson);
+    await logger.loggerJumpToFileLine(FILE_PATHS.counterAbi);
 
     await logger.log('Compilation completed!', 'check the "artifacts" directory to see compiled outputs.');
 }
