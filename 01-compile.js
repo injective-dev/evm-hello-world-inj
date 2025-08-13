@@ -15,6 +15,22 @@ async function step01Compile() {
     await logger.loggerJumpToFileLine(FILE_PATHS.counterAbi);
 
     await logger.log('Compilation completed!', 'check the "artifacts" directory to see compiled outputs.');
+
+    console.log(`
+==============================
+| What have we accomplished? |
+==============================
+
+1. Install the version of solc needed by the project.
+   (automatic via hardhat)
+2. Run solc, via hardhat, using the Counter.sol file as input.
+3. Observe the outputs produced by solc:
+   - EVM bytecode (hexadecimal)
+   - EVM ABI (JSON)
+
+==============================
+==============================
+`);
 }
 
 step01Compile().then(async () => {
