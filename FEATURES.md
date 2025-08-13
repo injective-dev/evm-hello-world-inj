@@ -36,6 +36,8 @@ v0.3.1 feedback
 
 - [x] for the setup shell script, npm installation to split into 2 separate batches to reduce time to first interaction --> `9a71b4a`
 	- [x] only install dot env and bip39 before prompting --> `9a71b4a`
+- [x] at end of 00-fund:
+	- [x] what just happened: highlight wallet generation and accoutn creation --> `7c7a77e`
 
 v0.2.0 feedback
 
@@ -55,23 +57,10 @@ v0.2.0 feedback
 - [x] step 5 interact don't output full ABI, just truncate --> `d79680f`
 - [x] investigate if there's an additional ethersjs wait needed on the SC interaction transaction --> `da99ce0`
 	- feedback to engineering that transaction doesn't appear in block explorer after transaction has happened --> not needed
-- [x] for logger waits: include timestamps of *start* of wait and *end* of wait --> `58bd164`
-- [x] for all scripts: logs which include a command - change to use a different ANSI colouring --> `b1492c6`
-- [x] for util, add new function to run CLI commands --> `0267e7d`
-- [x] setup shell, after it is complete --> `513731f`
-	- [x] investigate if possible to close a shell in gitpod (perhaps `exit`?)
-		- it was `exit` in the `setup` shell
-		- plus `gp tasks stop "$( gp tasks list --no-color | grep 'setup' | awk '{print $2}' )"` in the main shell --> ref https://www.gitpod.io/docs/classic/user/configure/workspaces/gitpod-cli#stop-2
-	- [x] if possible, switch to main shell after setup shell is closed
-- [-] in 00-fund (new script) --> `00616c3`
-	- [x] create new script
-	- [x] output blockscout URL for account address in output --> `4f0eabe`
-	- [x] refactor 03-deploy to replace this
-- [ ] feedback to engineering that:
-	- faucet needs to be faster to dispense, and
-	- even when there's an error message, blockscout URL should be provided to account
-	- faucet display transaction should show in blockscout (even after the RPC return value shows that the account balance has indeed increased already)
-	- faucet should also include blockscout URL for dispense transaction
+- [x] for the setup shell script, npm installation to split into 2 separate batches to reduce time to first interaction --> done in v0.3.1 feedback
+	- [x] only install dot env and bip39 before prompting --> done in v0.3.1 feedback
+- [ ] feedback to engineering that faucet dispense needs to be faster
+- [ ] feedback to engineering that there is a 90s+ delay for account to be funded
 
 v0.1.0 feedback
 
@@ -105,8 +94,8 @@ v0.1.0 feedback
 - [x]  at the beginning of each script:
 	- [x] open the script file itself in vscode --> `7271477`
 	- [x] add ability to disable this via a flag in config file --> WONTDO, no longer relevant
-- [ ] at end of setup script:
-	- [ ] what just happened here: explain the files, where they will be used
+- [x] at end of setup script:
+	- [x] what just happened here: explain the files, where they will be used --> `b2ab906`
 	- [x] open config.json in vscode --> impl in v0.2.0 feedback
 	- [x] open .env file in vscode --> impl in v0.2.0 feedback
 - [x] add an 06-stats script
@@ -121,23 +110,21 @@ v0.1.0 feedback
 	- [x] extract them before it gets deleted
 	- [x] perform time spent analysis
 	- [x] hold onto it for later comparison
-- [ ] at end of 01-compile:
-	- [ ] open the counter.json artefact 
-	- [ ] what just happened: highlight where the ABI is, and where the bytecode is
-- [ ]  in middle of 02-test:
-	- [ ] open Counter.test.js
-	- [ ] what just happened: describe the tests in the file
-- [ ] in 03-deploy
-	- [ ] consider moving funding step from 03-deploy to a new 00-fund
-	- [ ] what just happened: after deployment, include explanation for why an unverified contract still shows its source code
-	- [ ] link to `tab=contract_bytcode` blockscout URL
-- [ ] in 04-verify
-	- [ ] after verification, open up the source code of Counter.sol so that it is convenient to compare
-	- [ ] what just happened: after verification, explain what the ABI and source code are
-- [ ] in 05-interact
+- [x] at end of 01-compile:
+	- [x] open the counter.json artefact --> `e97b09d`
+	- [x] what just happened: highlight where the ABI is, and where the bytecode is --> `8e41bd1`
+- [x]  in middle of 02-test:
+	- [x] open Counter.test.js --> `a842176`
+	- [x] what just happened: describe the tests in the file --> `5a3b2d4`
+- [x] in 03-deploy
+	- [x] consider moving funding step from 03-deploy to a new 00-fund --> done in v0.2.0
+	- [x] what just happened: after deployment, include explanation for why an unverified contract still shows its source code --> `152f3d6`
+	- [x] link to `tab=contract_bytecode` blockscout URL --> done in v0.2.0
+- [x] in 04-verify
+	- [x] after verification, open up the source code of Counter.sol so that it is convenient to compare --> `e440451`
+	- [x] what just happened: after verification, explain what the ABI and source code are --> `c86f324`
+- [x] in 05-interact
 	- [x] do not console.log the full ABI --> already done in v0.2.0 output
-	- [ ] what just happened here: for all 3x interactions (query before, transaction, query after)
-	- [ ] rename the outputs to make query before and after more clear
-	- [ ] for the transaction output the blockscout URL instead of the hash
-- [ ] for the setup shell script, npm installation to split into 2 separate batches to reduce time to first interaction
-	- [ ] only install dot env and bip39 before prompting
+	- [x] what just happened here: for all 3x interactions (query before, transaction, query after) --> `c08968a`
+	- [x] rename the outputs to make query before and after more clearL --> done in v0.2.0
+	- [x] for the transaction output the blockscout URL instead of the hash --> `484fc32`
