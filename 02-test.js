@@ -15,6 +15,15 @@ async function step02Test() {
     await logger.logProcess('npx hardhat test');
 
     await logger.log('Test completed!');
+    await logger.logInfoBox(
+        'What have we accomplished?',
+        `
+1. Run mocha, via hardhat, using the Counter.test.js file as the specification.
+2. Observe the outputs produced by mocha:
+   - A list of tests with "✔" next to each passing one
+   - A table showing gas consumption for smart contract deployment and invocation transactions.
+`,
+    );
 }
 
 step02Test().then(async () => {
