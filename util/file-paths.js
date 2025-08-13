@@ -16,6 +16,7 @@ const FILE_PATHS = {
     counterDeploymentJson: path.resolve(__dirname, '../cache/Counter.deployment.json'),
     counterAbi: path.resolve(__dirname, '../artifacts/contracts/Counter.sol/Counter.json'),
     counterTest: path.resolve(__dirname, '../test/Counter.test.js'),
+    counterSol: path.resolve(__dirname, '../contracts/Counter.sol'),
 };
 
 export default FILE_PATHS;

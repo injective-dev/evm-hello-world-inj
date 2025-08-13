@@ -23,6 +23,7 @@ async function step04Verify() {
     console.log(counterDeploymentJson);
 
     await logger.logSection('Verify smart contract', ...logger.formatForTerminal('ITALIC', 'npx hardhat verify --network inj_testnet ${SC_ADDRESS}'));
+    await logger.loggerJumpToFileLine(FILE_PATHS.counterSol);
 
     const scAddress = counterDeploymentJson.deployedAddress;
     const command = `npx hardhat verify --force --network inj_testnet ${scAddress}`;
