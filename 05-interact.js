@@ -72,6 +72,26 @@ async function step05Interact() {
     logger.log('Counter value (AFTER transaction)', counterValue2);
 
     await logger.log('Interact completed!');
+
+    await logger.logInfoBox(
+        'What have we accomplished?',
+        `
+1. Connect to Injective Testnet over JSON-RPC and initialise a wallet
+   - Using "JsonRpcProvider" from ethers.js
+   - Using "Mnemonic" and "HDNodeWallet" from ethers.js
+2. Connect to a smart contract
+   - Using the ABI from the solc output in the compile step
+   - Using the deployed adress saved to disk in the deployment step
+3. Query the "value" property using a read invocation of the smart contract
+   - This is its initial value
+4. Invoke the "increment" function using a transaction (write invocation of the smart contract)
+   - Obtain the transaction address
+   - Open the block explorer URL, to view the transaction details
+5. Query the "value" property again using a read invocation of the smart contract
+   - Observe that the value the 2nd time around has increased from the initial value
+   - This is because the transaction has caused the state of the smart contract to change
+`,
+    );
 }
 
 step05Interact().then(async () => {
