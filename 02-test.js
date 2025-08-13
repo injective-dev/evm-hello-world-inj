@@ -15,6 +15,7 @@ async function step02Test() {
     await logger.logProcess('npx hardhat test');
 
     await logger.log('Test completed!');
+
     await logger.logInfoBox(
         'What have we accomplished?',
         `

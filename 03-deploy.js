@@ -72,6 +72,20 @@ async function step03Deploy() {
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_bytecode`;
     const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
     await logger.log('Deploy completed!', ...explorerUrlAnsi);
+
+    await logger.logInfoBox(
+        'What have we accomplished?',
+        `
+1. Connect to Injective Testnet over JSON-RPC
+   - Using "JsonRpcProvider" from ethers.js
+2. Perform a balance check for the account to ensure that it is funded
+   - Using "Mnemonic" and "HDNodeWallet" from ethers.js
+3. Send a deployment transaction, via a hardhat script, for the Counter smart contract
+4. Inspect the result of the deployment transaction
+   - Obtain the smart contract address
+   - Output the block explorer URL
+`,
+    );
 }
 
 step03Deploy().then(async () => {
