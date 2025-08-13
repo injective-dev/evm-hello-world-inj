@@ -63,6 +63,23 @@ async function step00Fund() {
     }
 
     await logger.log('Fund completed!');
+
+    await logger.logInfoBox(
+        'What have we accomplished?',
+        `
+1. Connect to Injective Testnet over JSON-RPC
+   - Using "JsonRpcProvider" from ethers.js
+2. Generate a new account
+   - Using "Mnemonic" and "HDNodeWallet" from ethers.js
+   - Using the BIP39 seed phrase stored in the .env file as input
+3. Visit the Injective Testnet faucet
+   - Paste the address of the new account
+   - Wait for it to dispense, which is a transfer transaction
+4. Perform a balance check for the account to ensure that it is funded
+   - If the balance is zero, only warn
+   - But do not error, to allow proceeding to the next step anyway
+`,
+    );
 }
 
 step00Fund().then(async () => {
