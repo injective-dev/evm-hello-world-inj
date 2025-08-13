@@ -32,6 +32,18 @@ async function step04Verify() {
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_source_code`;
     const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
     await logger.log('Verify successful!', ...explorerUrlAnsi);
+
+    await logger.logInfoBox(
+        'What have we accomplished?',
+        `
+1. Connect to Injective Testnet Blockscout
+   - Using EtherScan API, via hardhat
+2. Perform a forced verification
+   - Forced is needed in case other smart contracts are already deployed at a different address with the same EVM bytcode
+3. Inspect the result of the verification
+   - Open the block explorer URL, to view its source code and ABI
+`,
+    );
 }
 
 step04Verify().then(async () => {

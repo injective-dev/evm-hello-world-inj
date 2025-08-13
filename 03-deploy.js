@@ -83,7 +83,7 @@ async function step03Deploy() {
 3. Send a deployment transaction, via a hardhat script, for the Counter smart contract
 4. Inspect the result of the deployment transaction
    - Obtain the smart contract address
-   - Output the block explorer URL
+   - Open the block explorer URL, to view the deployed EVM bytecode
 `,
     );
 }
