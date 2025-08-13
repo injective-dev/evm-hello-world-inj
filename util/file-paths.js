@@ -15,6 +15,7 @@ const FILE_PATHS = {
     gitRefsHeadMain: path.resolve(__dirname, '../.git/refs/heads/main'),
     counterDeploymentJson: path.resolve(__dirname, '../cache/Counter.deployment.json'),
     counterAbi: path.resolve(__dirname, '../artifacts/contracts/Counter.sol/Counter.json'),
+    counterTest: path.resolve(__dirname, '../test/Counter.test.js'),
 };
 
 export default FILE_PATHS;

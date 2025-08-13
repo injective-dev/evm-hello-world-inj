@@ -12,7 +12,6 @@ async function step01Compile() {
 
     await logger.logProcess('npx hardhat compile');
 
-    await logger.loggerJumpToFileLine(FILE_PATHS.counterDeploymentJson);
     await logger.loggerJumpToFileLine(FILE_PATHS.counterAbi);
 
     await logger.log('Compilation completed!', 'check the "artifacts" directory to see compiled outputs.');

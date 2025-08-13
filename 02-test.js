@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { Logger } from './util/logger.js';
+import FILE_PATHS from './util/file-paths.js';
 
 const logger = new Logger();
 await logger.init();
@@ -8,6 +9,8 @@ async function step02Test() {
     await logger.logScriptBegin('test');
 
     await logger.logSection('Run test suite', ...logger.formatForTerminal('ITALIC', 'npx hardhat test'));
+
+    await logger.loggerJumpToFileLine(FILE_PATHS.counterTest);
 
     await logger.logProcess('npx hardhat test');
 
