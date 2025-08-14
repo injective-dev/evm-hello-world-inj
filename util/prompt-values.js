@@ -35,12 +35,6 @@ async function promptUser() {
             defaultValueFn: () => ('https://k8s.testnet.json-rpc.injective.network/'),
             validateValueFn: (value) => (typeof value === 'string' && value.match(/^https?\:\/\/.*$/)),
         });
-        
-        await promptInput("foobar", {
-            inputName: 'foo bar baz',
-            defaultValueFn: () => ('xyz'),
-            validateValueFn: (value) => (true),
-        });
 
         if (
             env.SEED_PHRASE &&
@@ -114,21 +108,6 @@ async function promptInput(value, {
 async function initDotEnv() {
     const results = await promptUser();
     await updateFiles(results);
-    await logger.logSetupEnd('setup', 'Set up complete!');
-
-
-
-    await logger.logInfoBox(
-        'What have we accomplished?',
-        `
-1. Initialise empty versions of .env and config.json files
-2. Interactive prompts to input (or use defaults) for values to be used in this projects
-   - BIP39 seed phrase (used to generate accounts)
-   - JSON-RPC endpoint URL (used to communicate with the network)
-3. Install dependencies
-   - Ran in the background during interactive prompts
-`
-    );
 }
 
 initDotEnv();

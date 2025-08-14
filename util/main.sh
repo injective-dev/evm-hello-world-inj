@@ -1,5 +1,7 @@
 #!/bin/bash
 echo "## Main"
 
-echo "To begin, run the following command for the first step:"
-echo "./00-fund.js"
+UTIL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+export UTIL_DIR
+
+node ${UTIL_DIR}/setup-complete.js
