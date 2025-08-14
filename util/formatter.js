@@ -118,7 +118,7 @@ function forTerminal(msgType, ...strings) {
                 ANSI.RESET + ANSI.BRIGHT + ANSI.FG_YELLOW + firstStr + ANSI.RESET + ANSI.FG_CYAN  + ' |\n' +
                 infoBoxHorizLine + ANSI.RESET + '\n',
                 ...restOfStrs,
-                ANSI.RESET + ANSI.FG_CYAN + '\n' + infoBoxHorizLine + '\n' + infoBoxHorizLine + '\n' + ANSI.RESET,
+                ANSI.RESET + ANSI.FG_CYAN + '\n' + infoBoxHorizLine + '\n' + ANSI.RESET,
             ];
             break;
         case 'SUMMARY':
