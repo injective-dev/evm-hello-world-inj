@@ -63,6 +63,8 @@ async function step03Deploy() {
 
     await logger.logProcess('npx hardhat run script/deploy.js --network inj_testnet');
 
+    await logger.log('Deploy completed!');
+
     await logger.logSection('Load deployment data');
     const counterDeploymentJsonStr =
         await node_fs.readFile(FILE_PATHS.counterDeploymentJson);
@@ -71,7 +73,7 @@ async function step03Deploy() {
 
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_bytecode`;
     const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
-    await logger.log('Deploy completed!', ...explorerUrlAnsi);
+    await logger.log('Smart contract', ...explorerUrlAnsi);
 
     await logger.logInfoBox(
         'What have we accomplished?',
