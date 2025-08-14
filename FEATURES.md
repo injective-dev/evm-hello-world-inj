@@ -30,7 +30,27 @@
     - updates to upstream template can be used to update downstream repos (including this)
     - templates can be used to spin up more hello world repos or other accompanying demo repos
 
-## Specific feature for this Hello World
+## Specific features for this Hello World
+
+v0.4.0 feedback
+
+- [x] when prompting config values, readline/stdin issue where each input character gets printed twice, e.g. "nneeww" instead of "new" --> `b473bde`
+- [ ] setup script info box flashes, cannot be read, because terminal closed
+- [ ] in 00-fund, put the instructions for funding in an info box
+- [ ] make info box has single row of "=" at bottom (not double)
+- [ ] make info box pause before revealin
+- [ ] in 01-compile, open the solidity file in vs code
+- [ ] in 01-compile, output the exact artefact JSON field names in the info box
+- [ ] in 03-deploy, output the block explorer URL bashed on the hash
+- [ ] in 04-verify, see if can have the solidity syntax plugin preinstalled within VS code
+- [ ] in 05-interact, when outputting the account address, do so as block explorer URL
+- [ ] in 05-interact, add output indicating "0n" as a BigInt
+- [ ] feedback to engineering on faucet
+	- [ ] faucet is too slow
+	- [ ] faucet should output transaction hash consistently
+- [ ] on block explorer
+	- [ ] balance shown in JSON-RPC, but not shown in block explorer, seems to be a synchronisation issue
+	- [ ] ABI tab is blank immediately after verification, and ony appears after switching back and forth to other tabs
 
 v0.3.1 feedback
 
