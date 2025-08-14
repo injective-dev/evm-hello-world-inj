@@ -1,6 +1,6 @@
 {
   "name": "inj-evm-hello-world",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "type": "module",
   "description": "Hello World in Injective for EVM developers",
