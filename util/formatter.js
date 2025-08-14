@@ -25,6 +25,8 @@ const CHARS = {
   ERROR: '❌',
   SUMMARY: '🔢',
   REMINDER: '🧐',
+  POINT_LEFT: '👈',
+  POINT_RIGHT: '👉',
 };
 
 /**
