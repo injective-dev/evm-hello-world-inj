@@ -261,7 +261,8 @@ class Logger {
         return ret;
     }
 
-    logInfoBox(title, ...strings) {
+    async logInfoBox(title, ...strings) {
+        await this.logWait();
         const ret = this.logBase(
             'infoBox',
             title,
