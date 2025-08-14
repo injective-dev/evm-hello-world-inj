@@ -16,3 +16,6 @@ tasks:
         gp sync-done setup_complete
         exit
       )
+vscode:
+    extensions:
+        - nomicfoundation.hardhat-solidity
