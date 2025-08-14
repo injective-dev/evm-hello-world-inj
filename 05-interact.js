@@ -50,10 +50,12 @@ async function step05Interact() {
     const scAbi = counterAbi.abi;
     const connectedHdWallet = hdWallet.connect(rpcProvider);
     const counter = new EthersContract(scAddress, scAbi, connectedHdWallet);
+    logger.log('Smart contract ABI', `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_abi`);
 
     await logger.logSection('Query smart contract');
     const counterValue1 = await counter.value();
     logger.log('Counter value (BEFORE transaction)', counterValue1);
+    console.log('Note that the "n" after the number simply denotes that it is of type BigInt (and you can ignore it).');
 
     await logger.logSection('Transact smart contract');
     const incrementTx = await counter.increment(7, { gasPrice: 160e6, gasLimit: 2e6 });
