@@ -10,7 +10,7 @@ import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
 
 const childProcessExec = node_util.promisify(node_child_process.exec);
-const { stdin, stdout } = node_process;
+const { stdin, stdout, stderr } = node_process;
 const hashSha256 = crypto.createHash('sha256');
 
 class Logger {
@@ -224,7 +224,7 @@ class Logger {
             typeof fileLine !== 'string') {
             throw new Error('File line not valid');
         }
-        await childProcessExec(`code --goto "${fileLine}"`, { stdout, stdin });
+        await childProcessExec(`code --goto "${fileLine}"`, { stdout, stderr });
     }
 
     async logSection(...strings) {
@@ -241,7 +241,7 @@ class Logger {
 
     async logProcess(command) {
         await this.log('$ ', ...this.formatForTerminal('BOLD', command), "\n...");
-        const result = await childProcessExec(command, { stdout, stdin });
+        const result = await childProcessExec(command, { stdout, stderr });
         const { stdout: output } = result;
         console.log(output);
         return result;
@@ -423,6 +423,13 @@ class Logger {
 `;
 
         return aggregatedScripts;
+    }
+
+    async delay(ms) {
+        if (typeof ms !== 'number' || isNaN(ms) || ms <= 0) {
+            ms = 1;
+        }
+        await new Promise(resolve => setTimeout(resolve, ms));
     }
 }
 

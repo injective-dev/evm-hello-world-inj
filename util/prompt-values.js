@@ -35,6 +35,12 @@ async function promptUser() {
             defaultValueFn: () => ('https://k8s.testnet.json-rpc.injective.network/'),
             validateValueFn: (value) => (typeof value === 'string' && value.match(/^https?\:\/\/.*$/)),
         });
+        
+        await promptInput("foobar", {
+            inputName: 'foo bar baz',
+            defaultValueFn: () => ('xyz'),
+            validateValueFn: (value) => (true),
+        });
 
         if (
             env.SEED_PHRASE &&

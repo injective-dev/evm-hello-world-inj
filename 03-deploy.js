@@ -44,7 +44,7 @@ async function step03Deploy() {
     // if funds are zero, wait for an additional 30s before checking again
     if (balance <= 0n) {
         logger.log('Waiting 30s before checking balance again...');
-        await new Promise((resolve) => { setTimeout(resolve, 30e3); });
+        await logger.delay(30e3);
 
         // check balance (2nd time)
         balance = await rpcProvider.getBalance(address);
