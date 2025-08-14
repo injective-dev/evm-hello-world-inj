@@ -8,6 +8,8 @@ await logger.init();
 async function step01Compile() {
     await logger.logScriptBegin('compile');
 
+    await logger.loggerJumpToFileLine(FILE_PATHS.counterSol);
+
     await logger.logSection('Run compiler', ...logger.formatForTerminal('ITALIC', 'npx hardhat compile'));
 
     await logger.logProcess('npx hardhat compile');
@@ -22,9 +24,9 @@ async function step01Compile() {
 1. Install the version of solc needed by the project.
    (automatic via hardhat)
 2. Run solc, via hardhat, using the Counter.sol file as input.
-3. Observe the outputs produced by solc:
-   - EVM bytecode (hexadecimal)
-   - EVM ABI (JSON)
+3. Observe the outputs produced by solc in the "Counter.json" artefacts file:
+   - EVM ABI (JSON): "abi"
+   - EVM bytecode (hexadecimal): "bytecode"
 `
     );
 }
