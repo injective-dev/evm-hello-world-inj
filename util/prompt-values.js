@@ -23,7 +23,7 @@ async function promptUser() {
     } = env;
 
     while (true) {
-        logger.logSection('Please enter the requested values to populate your .env and other config files.');
+        logger.logSectionWithoutWait('Please enter the requested values to populate your .env and other config files.');
 
         env.SEED_PHRASE = await promptInput(SEED_PHRASE, {
             inputName: 'BIP39 seed phrase',

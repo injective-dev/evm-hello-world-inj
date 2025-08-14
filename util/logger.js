@@ -228,6 +228,12 @@ class Logger {
     }
 
     async logSection(...strings) {
+        const ret = await this.logSectionWithoutWait(...strings);
+        await this.logWait();
+        return ret;
+    }
+
+    async logSectionWithoutWait(...strings) {
         console.log('');
         const ret = this.logBase(
             'section',
@@ -235,7 +241,6 @@ class Logger {
         );
         const fileLine = this.#getStackFileLine();
         console.log('↪️', fileLine);
-        await this.logWait();
         return ret;
     }
 
@@ -271,6 +276,10 @@ class Logger {
             output: stdout,
         });
         const inputValue = await rlPrompt.question(prompt);
+        console.log({
+            msg: 'closing rlPrompt',
+            inputValue,
+        });
         rlPrompt.close();
         return inputValue;
     }
