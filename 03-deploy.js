@@ -90,6 +90,13 @@ async function step03Deploy() {
     );
 }
 
+
+process.once('SIGINT', async () => {
+    await logger.logError('deploy', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('deploy', 'sigterm');
+});
 step03Deploy().then(async () => {
     await logger.logScriptEnd('deploy');
     console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './04-verify.js'));

@@ -31,6 +31,13 @@ async function step01Compile() {
     );
 }
 
+
+process.once('SIGINT', async () => {
+    await logger.logError('compile', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('compile', 'sigterm');
+});
 step01Compile().then(async () => {
     await logger.logScriptEnd('compile');
     console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './02-test.js'));

@@ -27,6 +27,13 @@ async function step02Test() {
     );
 }
 
+
+process.once('SIGINT', async () => {
+    await logger.logError('test', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('test', 'sigterm');
+});
 step02Test().then(async () => {
     await logger.logScriptEnd('test');
     console.log('To continue, run the following command for the next step:\n./03-deploy.js');

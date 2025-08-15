@@ -106,6 +106,12 @@ async function promptInput(value, {
     return value;
 }
 
+process.once('SIGINT', async () => {
+    await logger.logError('setup', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('setup', 'sigterm');
+});
 async function initDotEnv() {
     const results = await promptUser();
     await updateFiles(results);

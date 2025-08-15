@@ -10,6 +10,12 @@ dotenv.config({
 const logger = new Logger();
 await logger.init();
 
+process.once('SIGINT', async () => {
+    await logger.logError('stats', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('stats', 'sigterm');
+});
 async function step06Stats() {
     await logger.logScriptBegin('stats');
 

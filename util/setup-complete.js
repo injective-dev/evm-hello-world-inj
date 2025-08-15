@@ -19,6 +19,12 @@ async function setupComplete() {
 
 }
 
+process.once('SIGINT', async () => {
+    await logger.logError('setup', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('setup', 'sigterm');
+});
 setupComplete().then(async () => {
     await logger.logSetupEnd('setup', 'Set up complete!');
     console.log(

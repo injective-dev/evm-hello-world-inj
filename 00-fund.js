@@ -94,6 +94,12 @@ async function step00Fund() {
     );
 }
 
+process.once('SIGINT', async () => {
+    await logger.logError('fund', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('fund', 'sigterm');
+});
 step00Fund().then(async () => {
     await logger.logScriptEnd('fund');
     console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './01-compile.js'));

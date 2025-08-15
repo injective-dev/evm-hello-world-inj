@@ -46,6 +46,13 @@ async function step04Verify() {
     );
 }
 
+
+process.once('SIGINT', async () => {
+    await logger.logError('verify', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('verify', 'sigterm');
+});
 step04Verify().then(async () => {
     await logger.logScriptEnd('verify');
     console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './05-interact.js'));

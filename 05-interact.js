@@ -19,6 +19,13 @@ dotenv.config({
 const logger = new Logger();
 await logger.init();
 
+
+process.once('SIGINT', async () => {
+    await logger.logError('interact', 'sigint');
+});
+process.once('SIGTERM', async () => {
+    await logger.logError('interact', 'sigterm');
+});
 async function step05Interact() {
     await logger.logScriptBegin('interact');
 
