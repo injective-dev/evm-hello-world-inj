@@ -282,10 +282,6 @@ class Logger {
             output: stdout,
         });
         const inputValue = await rlPrompt.question(prompt);
-        console.log({
-            msg: 'closing rlPrompt',
-            inputValue,
-        });
         rlPrompt.close();
         return inputValue;
     }
