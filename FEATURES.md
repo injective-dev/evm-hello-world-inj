@@ -46,11 +46,11 @@ v0.4.2 feedback
 - [x] typo: 'bytcode' --> `934496e`
 - [x] remove "foo" from default config.json file --> `b9e23fb`
 - [x] in 05-interact, under 'initialise smart contract' format URL to make it obvious that it is clickable --> `36ab31d`
-- [ ] typing in your own seed phrase does not work in prompt values script (JCH)
-- [ ] logger file line mistakes - fix for when logger calls another logger function (cannot use hardcoded stack depth)
-- [ ] in logger capture when script has exited prematurely (e.g. Ctrl+C), and count that as an error for the purposes of stats
-- [ ] work out if possible to disable log output from dotenv
-- [ ] refactor formatter such that it is easier to use for single strings (rather than arrays of strings)
+- [x] typing in your own seed phrase does not work in prompt values script (JCH) --> WONTDO looked into it, does indeed seem to be validating properly
+- [x] in logger capture when script has exited prematurely (e.g. Ctrl+C), and count that as an error for the purposes of stats --> `b36d9d6`
+- [x] work out if possible to disable log output from dotenv --> `73cf7b2`
+- [x] refactor formatter such that it is easier to use for single strings (rather than arrays of strings) --> `136c722`
+- [x] logger file line mistakes - fix for when logger calls another logger function (cannot use hardcoded stack depth) --> `378147a`
 
 v0.4.0 feedback
 
