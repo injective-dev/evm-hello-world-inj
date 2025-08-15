@@ -42,13 +42,14 @@ v0.4.2 feedback
 	- change explorer URL position
 - [x] make generation of new seed phrase more obvious by highlighting the text (MK) --> `7a1b40f`
 - [x] remove extraneous logs for "msg: 'closing rlPrompt'" --> `9d7da67`
+- [x] switch from hardhat solidity syntax highlighter to another more basic one (BJ) --> `b0e90d5`
+- [x] typo: 'bytcode' --> `934496e`
+- [x] remove "foo" from default config.json file --> `b9e23fb`
+- [x] in 05-interact, under 'initialise smart contract' format URL to make it obvious that it is clickable --> `36ab31d`
+- [ ] typing in your own seed phrase does not work in prompt values script (JCH)
 - [ ] logger file line mistakes - fix for when logger calls another logger function (cannot use hardcoded stack depth)
-- [ ] remove "foo" from default config.json file
 - [ ] in logger capture when script has exited prematurely (e.g. Ctrl+C), and count that as an error for the purposes of stats
-- [ ] switch from hardhat solidity syntax highlighter to another more basic one
 - [ ] work out if possible to disable log output from dotenv
-- [ ] typo: 'bytcode'
-- [ ] in 05-interact, under 'initialise smart contract' format URL to make it obvious that it is clickable
 - [ ] refactor formatter such that it is easier to use for single strings (rather than arrays of strings)
 
 v0.4.0 feedback
