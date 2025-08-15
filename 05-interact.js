@@ -50,7 +50,8 @@ async function step05Interact() {
     const scAbi = counterAbi.abi;
     const connectedHdWallet = hdWallet.connect(rpcProvider);
     const counter = new EthersContract(scAddress, scAbi, connectedHdWallet);
-    logger.log('Smart contract ABI', `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_abi`);
+    const formattedScAbiUrl = logger.formatForTerminal('URL', `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_abi`)[0];
+    logger.log('Smart contract ABI', formattedScAbiUrl);
 
     await logger.logSection('Query smart contract');
     const counterValue1 = await counter.value();
