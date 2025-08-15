@@ -75,15 +75,16 @@ async function promptInput(value, {
 }) {
     let valid = false;
     logger.log(`Enter value for ${inputName}`);
+    const highlightedNew = logger.formatForTerminal('HIGHLIGHTER', 'new')[0];
     while (!valid) {
         if (value) {
             console.log(
                 `Current: "${value}"\n`,
                 '(enter blank to re-use the above value)\n',
-                '(OR enter \'new\' to use a default value or generate a new value)',
+                `(OR enter \'${ highlightedNew }\' to use a default value or generate a new value)`,
             );
         } else {
-            console.log('(enter \'new\' to use a default value or generate a new value)');
+            console.log(`(enter \'${ highlightedNew }\' to use a default value or generate a new value)`);
         }
         const inputValue = await logger.askQuestion();
         if (inputValue === 'new') {
