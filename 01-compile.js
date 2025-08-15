@@ -24,7 +24,7 @@ async function step01Compile() {
 1. Install the version of solc needed by the project.
    (automatic via hardhat)
 2. Run solc, via hardhat, using the Counter.sol file as input.
-3. Observe the outputs produced by solc in the "Counter.json" artefacts file:
+3. Observe the outputs produced by solc in the "Counter.json" artifacts file:
    - EVM ABI (JSON): "abi"
    - EVM bytecode (hexadecimal): "bytecode"
 `
