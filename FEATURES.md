@@ -32,13 +32,32 @@
 
 ## Specific features for this Hello World
 
+v0.4.2 feedback
+
+- [x] change blockscout URLs to be testnet only (MK) --> `335746d`
+	- https://testnet.blockscout.injective.network/
+- [x] make funding process more obvious (MK) --> `bade1a3`
+	- bold/highlight "← copy this" and "← open this" in main output
+	- bold/highlight "← copy this" and "← open this" in info box
+	- change explorer URL position
+- [x] make generation of new seed phrase more obvious by highlighting the text (MK) --> `7a1b40f`
+- [x] remove extraneous logs for "msg: 'closing rlPrompt'" --> `9d7da67`
+- [ ] logger file line mistakes - fix for when logger calls another logger function (cannot use hardcoded stack depth)
+- [ ] remove "foo" from default config.json file
+- [ ] in logger capture when script has exited prematurely (e.g. Ctrl+C), and count that as an error for the purposes of stats
+- [ ] switch from hardhat solidity syntax highlighter to another more basic one
+- [ ] work out if possible to disable log output from dotenv
+- [ ] typo: 'bytcode'
+- [ ] in 05-interact, under 'initialise smart contract' format URL to make it obvious that it is clickable
+- [ ] refactor formatter such that it is easier to use for single strings (rather than arrays of strings)
+
 v0.4.0 feedback
 
 - [x] when prompting config values, readline/stdin issue where each input character gets printed twice, e.g. "nneeww" instead of "new" --> `b473bde`
 - [x] setup script info box flashes, cannot be read, because terminal closed --> `94842cc`
 - [x] make info box has single row of "=" at bottom (not double) --> `7448b11`
 - [x] make info box pause before revealing --> `7368043`
-- [ ] see if can have the solidity syntax plugin preinstalled within VS code --> `0103a67`
+- [x] see if can have the solidity syntax plugin preinstalled within VS code --> `0103a67`
 - [x] in 00-fund, put the instructions for funding in an info box --> `a41df59`
 - [x] in 01-compile, open the solidity file in vs code --> `eecb50f`
 - [x] in 01-compile, output the exact artefact JSON field names in the info box --> `eecb50f`
@@ -50,7 +69,7 @@ v0.4.0 feedback
 	- [ ] faucet should output transaction hash consistently
 - [ ] feedback to engineering on block explorer
 	- [ ] balance shown in JSON-RPC, but not shown in block explorer, seems to be a synchronisation issue
-	- [ ] ABI tab is blank immediately after verification, and ony appears after switching back and forth to other tabs
+	- [ ] ABI tab is blank immediately after verification, and only appears after switching back and forth to other tabs
 
 v0.3.1 feedback
 
