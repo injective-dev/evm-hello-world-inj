@@ -1,3 +1,8 @@
+import node_url from 'node:url';
+
+const { fileURLToPath } = node_url;
+const __filename = fileURLToPath(import.meta.url);
+
 const ANSI = {
   RESET: '\x1b[0m',
   BRIGHT: '\x1b[1m',
@@ -177,14 +182,28 @@ const basicTerminal = {
     ),
 };
 
+const skippedStackFiles = [
+    __filename,
+    __filename.replace('formatter.js', 'logger.js'),
+];
+
 function getStackFileLine() {
-    const out = new Error()?.stack
-        ?.split('at ')?.[4]
-        ?.trim()
-        ?.split(' ')?.[1]
-        ?.slice(1, -1)
-        ?.trim();
-    return out;
+    const err = new Error();
+    const out = err
+        ?.stack
+        ?.split('at ')
+        .slice(1)
+        .map((s) => (
+            s
+                .split('file://')[1]
+                ?.trim()
+                .split(')')[0]
+        ))
+        .filter((s) => (
+            !(s?.startsWith(skippedStackFiles[0])) &&
+            !(s?.startsWith(skippedStackFiles[1]))
+        ));
+    return out[0];
 }
 
 export default {
