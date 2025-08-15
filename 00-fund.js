@@ -28,16 +28,28 @@ async function step00Fund() {
     const hdWalletNode = EthersHDNodeWallet.fromMnemonic(mnemonic, hdPath);
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
-    const formattedAddress = logger.formatForTerminal('BOLD', address);
-    logger.log('EVM address of account', ...formattedAddress, '← copy this');
-    const addressUrl = logger.formatForTerminal('url', `https://testnet.blockscout.injective.network/address/${address}`);
+    const addressUrl = logger.formatForTerminal(
+        'url',
+        `https://testnet.blockscout.injective.network/address/${address}`,
+    );
     logger.log('Account in explorer:', ...addressUrl);
-    const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
-    logger.log('Injective Testnet Faucet:', ...faucetUrl, '← open this');
+    const formattedAddress = logger.formatForTerminal('BOLD', address);
+    const formattedHighlightForAddress = logger.formatForTerminal('HIGHLIGHTER', '← copy this');
+    logger.log('EVM address of account', ...formattedAddress, ...formattedHighlightForAddress);
+    const faucetUrl = logger.formatForTerminal(
+        'url',
+        'https://testnet.faucet.injective.network/',
+    );
+    const formattedHighlightForFaucetUrl = logger.formatForTerminal('HIGHLIGHTER', '← open this');
+    logger.log(
+        'Injective Testnet Faucet:',
+        ...faucetUrl,
+        ...formattedHighlightForFaucetUrl,
+    );
     await logger.logInfoBoxWithoutWait(
         `${ CHARS.POINT_RIGHT }Instructions${ CHARS.POINT_LEFT }`, 
-        '\n- Please copy the EVM address above (see "← copy this")',
-        '\n- Cmd+Click/Ctrl+Click the faucet URL above (see "← open this")',
+        `\n- Please copy the EVM address above (see "${ formattedHighlightForAddress[0] }")`,
+        `\n- Cmd+Click/Ctrl+Click the faucet URL above (see "${ formattedHighlightForFaucetUrl[0] }")`,
         '\n- Request Testnet INJ *before* proceeding with the next step',
     );
 

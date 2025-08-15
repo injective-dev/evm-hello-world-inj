@@ -12,6 +12,7 @@ const ANSI = {
   FG_PURPLE: '\x1b[35m',
   FG_CYAN: '\x1b[36m',
   FG_DEFAULT: '\x1b[39m',
+  HIGHLIGHTER_YELLOW: '\x1b[38;5;202;48;5;227m',
   CLEAR_LINE: '\x1b[2K',
   CURSOR_UP_1: '\x1b[1A',
   CURSOR_LEFT_MAX: '\x1b[9999D',
@@ -153,6 +154,14 @@ function forTerminal(msgType, ...strings) {
                 s +
                 ANSI.FG_DEFAULT +
                 ANSI.UNDERLINE_OFF
+            ));
+            break;
+        case 'HIGHLIGHTER':
+        case 'HIGHLIGHTER_YELLOW':
+            out = strings.map((s) => (
+                ANSI.HIGHLIGHTER_YELLOW +
+                s +
+                ANSI.RESET
             ));
             break;
         default:
