@@ -13,6 +13,7 @@ const { CHARS } = formatter;
 const processEnv = {};
 dotenv.config({
     processEnv,
+    quiet: true,
 });
 const logger = new Logger();
 await logger.init();

@@ -9,6 +9,7 @@ import { Logger } from './util/logger.js';
 const processEnv = {};
 dotenv.config({
     processEnv,
+    quiet: true,
 });
 const logger = new Logger();
 await logger.init();

@@ -15,6 +15,7 @@ async function promptUser() {
     dotenv.config({
         path: FILE_PATHS.dotEnv,
         processEnv: env,
+        quiet: true,
     });
 
     let {

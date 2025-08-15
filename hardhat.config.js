@@ -1,7 +1,9 @@
 import '@nomicfoundation/hardhat-toolbox';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+    quiet: true,
+});
 
 let accounts;
 if (process.env.PRIVATE_KEY) {
