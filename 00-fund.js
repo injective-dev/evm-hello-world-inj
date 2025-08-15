@@ -30,7 +30,7 @@ async function step00Fund() {
     const address = hdWallet.address;
     const formattedAddress = logger.formatForTerminal('BOLD', address);
     logger.log('EVM address of account', ...formattedAddress, '← copy this');
-    const addressUrl = logger.formatForTerminal('url', `https://blockscout.injective.network/address/${address}`);
+    const addressUrl = logger.formatForTerminal('url', `https://testnet.blockscout.injective.network/address/${address}`);
     logger.log('Account in explorer:', ...addressUrl);
     const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
     logger.log('Injective Testnet Faucet:', ...faucetUrl, '← open this');

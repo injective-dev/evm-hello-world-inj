@@ -30,7 +30,7 @@ async function step03Deploy() {
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
     logger.log('EVM address of deployer account', address);
-    const addressUrl = logger.formatForTerminal('url', `https://blockscout.injective.network/address/${address}`);
+    const addressUrl = logger.formatForTerminal('url', `https://testnet.blockscout.injective.network/address/${address}`);
     logger.log('Deployer account in explorer:', ...addressUrl);
 
     // check what its funds are
