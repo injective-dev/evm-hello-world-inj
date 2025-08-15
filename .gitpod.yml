@@ -18,4 +18,4 @@ tasks:
       )
 vscode:
     extensions:
-        - nomicfoundation.hardhat-solidity
+        - JuanBlanco.solidity
