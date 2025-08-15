@@ -12,6 +12,7 @@ import FILE_PATHS from './file-paths.js';
 const childProcessExec = node_util.promisify(node_child_process.exec);
 const { stdin, stdout, stderr } = node_process;
 const hashSha256 = crypto.createHash('sha256');
+const fmt = formatter.basicTerminal;
 
 class Logger {
     static #versionStamp = '';
@@ -21,6 +22,12 @@ class Logger {
     anonId = '';
     configJson = null;
     #initHasBeenCalled = false;
+    f = {
+        bold: (s) => ( this.#noAnsi() ? s : fmt.bold(s) ),
+        italic: (s) => ( this.#noAnsi() ? s : fmt.italic(s) ),
+        url: (s) => ( this.#noAnsi() ? s : fmt.url(s) ),
+        highlighter: (s) => ( this.#noAnsi() ? s : fmt.highlighterYellow(s) ),
+    };
 
     /**
      * You **must** await `init` **before** using logger.
@@ -33,7 +40,6 @@ class Logger {
      * ```
      */
     constructor() {
-        // this.init();
     }
 
     /**
@@ -104,6 +110,13 @@ class Logger {
             return strings;
         }
         return formatter.forTerminal(msgType, ...strings);
+    }
+
+    /**
+     * @returns {boolean} true when ANSI is explicitly disabled in the config (false by default)
+     */
+    #noAnsi () {
+        return this.configJson?.ansiDisabled;
     }
 
     /**
@@ -245,7 +258,7 @@ class Logger {
     }
 
     async logProcess(command) {
-        await this.log('$ ', ...this.formatForTerminal('BOLD', command), "\n...");
+        await this.log('$ ', this.f.bold(command), "\n...");
         const result = await childProcessExec(command, { stdout, stderr });
         const { stdout: output } = result;
         console.log(output);

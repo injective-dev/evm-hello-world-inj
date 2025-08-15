@@ -134,41 +134,48 @@ function forTerminal(msgType, ...strings) {
             ];
             break;
         case 'BOLD':
-            out = strings.map((s) => (
-                ANSI.BRIGHT +
-                s +
-                ANSI.RESET
-            ));
+            out = strings.map(basicTerminal.bold);
             break;
         case 'ITALIC':
-            out = strings.map((s) => (
-                ANSI.EMPHASIS +
-                s +
-                ANSI.RESET
-            ));
+            out = strings.map(basicTerminal.italic);
             break;
         case 'URL':
-            out = strings.map((s) => (
-                ANSI.UNDERLINE +
-                ANSI.FG_CYAN +
-                s +
-                ANSI.FG_DEFAULT +
-                ANSI.UNDERLINE_OFF
-            ));
+            out = strings.map(basicTerminal.url);
             break;
         case 'HIGHLIGHTER':
         case 'HIGHLIGHTER_YELLOW':
-            out = strings.map((s) => (
-                ANSI.HIGHLIGHTER_YELLOW +
-                s +
-                ANSI.RESET
-            ));
+            out = strings.map(basicTerminal.highlighterYellow);
             break;
         default:
             // do nothing
     }
     return out;
 }
+
+const basicTerminal = {
+    bold: (s) => (
+        ANSI.BRIGHT +
+        s +
+        ANSI.RESET
+    ),
+    url: (s) => (
+        ANSI.UNDERLINE +
+        ANSI.FG_CYAN +
+        s +
+        ANSI.FG_DEFAULT +
+        ANSI.UNDERLINE_OFF
+    ),
+    italic: (s) => (
+        ANSI.EMPHASIS +
+        s +
+        ANSI.RESET
+    ),
+    highlighterYellow: (s) => (
+        ANSI.HIGHLIGHTER_YELLOW +
+        s +
+        ANSI.RESET
+    ),
+};
 
 function getStackFileLine() {
     const out = new Error()?.stack
@@ -184,6 +191,7 @@ export default {
     ANSI,
     CHARS,
     forTerminal,
+    basicTerminal,
     duration: formatDuration,
     getStackFileLine,
 };
