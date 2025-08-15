@@ -39,7 +39,7 @@ async function step04Verify() {
 1. Connect to Injective Testnet Blockscout
    - Using EtherScan API, via hardhat
 2. Perform a forced verification
-   - Forced is needed in case other smart contracts are already deployed at a different address with the same EVM bytcode
+   - Forced is needed in case other smart contracts are already deployed at a different address with the same EVM bytecode
 3. Inspect the result of the verification
    - Open the block explorer URL, to view its source code and ABI
 `,
