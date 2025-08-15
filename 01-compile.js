@@ -10,7 +10,7 @@ async function step01Compile() {
 
     await logger.loggerJumpToFileLine(FILE_PATHS.counterSol);
 
-    await logger.logSection('Run compiler', ...logger.formatForTerminal('ITALIC', 'npx hardhat compile'));
+    await logger.logSection('Run compiler', logger.f.italic('npx hardhat compile'));
 
     await logger.logProcess('npx hardhat compile');
 
@@ -40,7 +40,7 @@ process.once('SIGTERM', async () => {
 });
 step01Compile().then(async () => {
     await logger.logScriptEnd('compile');
-    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './02-test.js'));
+    console.log('To continue, run the following command for the next step:\n', logger.f.bold('./02-test.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('compile', err.message);

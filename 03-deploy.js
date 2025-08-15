@@ -31,8 +31,8 @@ async function step03Deploy() {
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
     logger.log('EVM address of deployer account', address);
-    const addressUrl = logger.formatForTerminal('url', `https://testnet.blockscout.injective.network/address/${address}`);
-    logger.log('Deployer account in explorer:', ...addressUrl);
+    const addressUrl = logger.f.url(`https://testnet.blockscout.injective.network/address/${address}`);
+    logger.log('Deployer account in explorer:', addressUrl);
 
     // check what its funds are
     const rpcUrl = processEnv.INJ_TESTNET_RPC_URL;
@@ -60,7 +60,7 @@ async function step03Deploy() {
         }
     }
 
-    await logger.logSection('Run deploy script', ...logger.formatForTerminal('ITALIC', 'npx hardhat run script/deploy.js --network inj_testnet'));
+    await logger.logSection('Run deploy script', logger.f.italic('npx hardhat run script/deploy.js --network inj_testnet'));
 
     await logger.logProcess('npx hardhat run script/deploy.js --network inj_testnet');
 
@@ -73,8 +73,8 @@ async function step03Deploy() {
     const scAddress = counterDeploymentJson.deployedAddress;
 
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_bytecode`;
-    const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
-    await logger.log('Smart contract', ...explorerUrlAnsi);
+    const explorerUrlAnsi = logger.f.url(explorerUrl);
+    await logger.log('Smart contract', explorerUrlAnsi);
 
     await logger.logInfoBox(
         'What have we accomplished?',
@@ -100,7 +100,7 @@ process.once('SIGTERM', async () => {
 });
 step03Deploy().then(async () => {
     await logger.logScriptEnd('deploy');
-    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './04-verify.js'));
+    console.log('To continue, run the following command for the next step:\n', logger.f.bold('./04-verify.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('deploy', err.message);

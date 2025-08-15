@@ -29,7 +29,7 @@ setupComplete().then(async () => {
     await logger.logSetupEnd('setup', 'Set up complete!');
     console.log(
         'To begin, run the following command for the first step:\n',
-        ...logger.formatForTerminal('BOLD', './00-fund.js'),
+        logger.f.bold('./00-fund.js'),
     );
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {

@@ -76,7 +76,7 @@ async function promptInput(value, {
 }) {
     let valid = false;
     logger.log(`Enter value for ${inputName}`);
-    const highlightedNew = logger.formatForTerminal('HIGHLIGHTER', 'new')[0];
+    const highlightedNew = logger.f.highlighter('new');
     while (!valid) {
         if (value) {
             console.log(

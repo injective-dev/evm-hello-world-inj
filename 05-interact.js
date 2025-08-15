@@ -58,7 +58,7 @@ async function step05Interact() {
     const scAbi = counterAbi.abi;
     const connectedHdWallet = hdWallet.connect(rpcProvider);
     const counter = new EthersContract(scAddress, scAbi, connectedHdWallet);
-    const formattedScAbiUrl = logger.formatForTerminal('URL', `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_abi`)[0];
+    const formattedScAbiUrl = logger.f.url(`https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_abi`);
     logger.log('Smart contract ABI', formattedScAbiUrl);
 
     await logger.logSection('Query smart contract');
@@ -72,8 +72,8 @@ async function step05Interact() {
     setTimeout(() => {
         // print after a second so dev isn't getting bored/ impatient while waiting
         const explorerUrl = `https://testnet.blockscout.injective.network/tx/${incrementTx.hash}`;
-        const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
-        console.log('Transaction', ...explorerUrlAnsi);
+        const explorerUrlAnsi = logger.f.url(explorerUrl);
+        console.log('Transaction', explorerUrlAnsi);
     }, 1000);
     const incrementTxReceipt = await incrementTx.wait(1);
     logger.log('Increment transaction block number', incrementTxReceipt.blockNumber);
@@ -107,7 +107,7 @@ async function step05Interact() {
 
 step05Interact().then(async () => {
     await logger.logScriptEnd('interact');
-    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './06-stats.js'));
+    console.log('To continue, run the following command for the next step:\n', logger.f.bold('./06-stats.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('interact', err.message);

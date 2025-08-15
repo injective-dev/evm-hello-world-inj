@@ -29,28 +29,26 @@ async function step00Fund() {
     const hdWalletNode = EthersHDNodeWallet.fromMnemonic(mnemonic, hdPath);
     const hdWallet = hdWalletNode.derivePath('0');
     const address = hdWallet.address;
-    const addressUrl = logger.formatForTerminal(
-        'url',
+    const addressUrl = logger.f.url(
         `https://testnet.blockscout.injective.network/address/${address}`,
     );
-    logger.log('Account in explorer:', ...addressUrl);
-    const formattedAddress = logger.formatForTerminal('BOLD', address);
-    const formattedHighlightForAddress = logger.formatForTerminal('HIGHLIGHTER', '← copy this');
-    logger.log('EVM address of account', ...formattedAddress, ...formattedHighlightForAddress);
-    const faucetUrl = logger.formatForTerminal(
-        'url',
+    logger.log('Account in explorer:', addressUrl);
+    const formattedAddress = logger.f.bold(address);
+    const formattedHighlightForAddress = logger.f.highlighter('← copy this');
+    logger.log('EVM address of account', formattedAddress, formattedHighlightForAddress);
+    const faucetUrl = logger.f.url(
         'https://testnet.faucet.injective.network/',
     );
-    const formattedHighlightForFaucetUrl = logger.formatForTerminal('HIGHLIGHTER', '← open this');
+    const formattedHighlightForFaucetUrl = logger.f.highlighter('← open this');
     logger.log(
         'Injective Testnet Faucet:',
-        ...faucetUrl,
-        ...formattedHighlightForFaucetUrl,
+        faucetUrl,
+        formattedHighlightForFaucetUrl,
     );
     await logger.logInfoBoxWithoutWait(
         `${ CHARS.POINT_RIGHT }Instructions${ CHARS.POINT_LEFT }`, 
-        `\n- Please copy the EVM address above (see "${ formattedHighlightForAddress[0] }")`,
-        `\n- Cmd+Click/Ctrl+Click the faucet URL above (see "${ formattedHighlightForFaucetUrl[0] }")`,
+        `\n- Please copy the EVM address above (see "${ formattedHighlightForAddress }")`,
+        `\n- Cmd+Click/Ctrl+Click the faucet URL above (see "${ formattedHighlightForFaucetUrl }")`,
         '\n- Request Testnet INJ *before* proceeding with the next step',
     );
 
@@ -65,8 +63,7 @@ async function step00Fund() {
 
     // warning if funds are zero, allow proceeding to next step anyway
     if (balance <= 0n) {
-        // const faucetUrl = logger.formatForTerminal('url', 'https://testnet.faucet.injective.network/');
-        logger.log('Injective Testnet Faucet:', ...faucetUrl);
+        logger.log('Injective Testnet Faucet:', faucetUrl);
         logger.log(
             'Unfunded account',
             '\n',
@@ -103,7 +100,7 @@ process.once('SIGTERM', async () => {
 });
 step00Fund().then(async () => {
     await logger.logScriptEnd('fund');
-    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './01-compile.js'));
+    console.log('To continue, run the following command for the next step:\n', logger.f.bold('./01-compile.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('fund', err.message);

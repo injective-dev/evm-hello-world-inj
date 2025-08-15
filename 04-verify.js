@@ -23,7 +23,7 @@ async function step04Verify() {
     const counterDeploymentJson = JSON.parse(counterDeploymentJsonStr);
     console.log(counterDeploymentJson);
 
-    await logger.logSection('Verify smart contract', ...logger.formatForTerminal('ITALIC', 'npx hardhat verify --network inj_testnet ${SC_ADDRESS}'));
+    await logger.logSection('Verify smart contract', logger.f.italic('npx hardhat verify --network inj_testnet ${SC_ADDRESS}'));
     await logger.loggerJumpToFileLine(FILE_PATHS.counterSol);
 
     const scAddress = counterDeploymentJson.deployedAddress;
@@ -31,8 +31,8 @@ async function step04Verify() {
     await logger.logProcess(command);
 
     const explorerUrl = `https://testnet.blockscout.injective.network/address/${scAddress}?tab=contract_source_code`;
-    const explorerUrlAnsi = logger.formatForTerminal('url', explorerUrl);
-    await logger.log('Verify successful!', ...explorerUrlAnsi);
+    const explorerUrlAnsi = logger.f.url(explorerUrl);
+    await logger.log('Verify successful!', explorerUrlAnsi);
 
     await logger.logInfoBox(
         'What have we accomplished?',
@@ -56,7 +56,7 @@ process.once('SIGTERM', async () => {
 });
 step04Verify().then(async () => {
     await logger.logScriptEnd('verify');
-    console.log('To continue, run the following command for the next step:\n', ...logger.formatForTerminal('BOLD', './05-interact.js'));
+    console.log('To continue, run the following command for the next step:\n', logger.f.bold('./05-interact.js'));
 }).catch(async (err) => {
     if (err.stdout || err.stderr) {
         await logger.logError('verify', err.message);
