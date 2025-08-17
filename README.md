@@ -76,6 +76,10 @@ with each version released
 so as to keep improving the hello world experience.
 You can watch them below:
 
+`v0.4.2`:
+
+[![](https://i.ytimg.com/vi/Dsoy79rQfKg/maxresdefault.jpg)](https://www.youtube.com/watch?v=Dsoy79rQfKg)
+
 `v0.4.0`:
 
 [![](https://i.ytimg.com/vi/_JF7g33mjYg/maxresdefault.jpg)](https://www.youtube.com/watch?v=_JF7g33mjYg)
