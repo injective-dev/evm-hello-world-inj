@@ -71,8 +71,7 @@ Feel free to drop your feedback:
 
 ### Self feedback
 
-I've been performing micro DX self-audits on the repo
-with each version released
+I've been performing micro DX self-audits on the repo with each version released,
 so as to keep improving the hello world experience.
 You can watch them below:
 

@@ -1,0 +1,10 @@
+// See https://containers.dev/implementors/json_reference/ for configuration reference
+{
+  "name": "inj-evm-hello-world-devcontainer",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "postCreateCommand": "bash ./util/setup.sh",
+  "postStartCommand": "bash ./util/main.sh",
+  "remoteUser": "node"
+}
