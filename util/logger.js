@@ -158,11 +158,30 @@ class Logger {
      */
     async flush() {
         let out = '';
+        const stepsToFlush = [];
         while (this.flushedStep < this.step) {
             this.flushedStep++;
-            const latestStep = JSON.stringify(this.steps[this.flushedStep], undefined, 0);
-            out += `${latestStep}\n`
+            const latestStep = this.steps[this.flushedStep];
+            const latestStepStr = JSON.stringify(latestStep, undefined, 0);
+            stepsToFlush.push({ ...latestStep, data: latestStepStr });
+            out += `${latestStepStr}\n`
         }
+        const metricsBody = JSON.stringify({
+            events: stepsToFlush,
+        });
+        console.log(metricsBody);
+        const fetchPromise = fetch(
+            this.configJson.metricsUrl, {
+                method: 'POST',
+                body: metricsBody,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        // do not await this
+        fetchPromise
+            .catch(console.error)
         await fs.appendFile(FILE_PATHS.logs, out);
     }
 
