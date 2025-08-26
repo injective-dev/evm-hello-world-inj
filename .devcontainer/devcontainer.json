@@ -4,7 +4,6 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "postCreateCommand": "bash ./util/setup.sh",
-  "postStartCommand": "bash ./util/main.sh",
+  "postCreateCommand": "bash ./util/setup.sh && bash ./util/main.sh",
   "remoteUser": "node"
 }
