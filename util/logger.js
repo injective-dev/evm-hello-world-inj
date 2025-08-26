@@ -169,7 +169,6 @@ class Logger {
         const metricsBody = JSON.stringify({
             events: stepsToFlush,
         });
-        console.log(metricsBody);
         const fetchPromise = fetch(
             this.configJson.metricsUrl, {
                 method: 'POST',
