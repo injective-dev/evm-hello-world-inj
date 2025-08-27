@@ -11,7 +11,6 @@ import FILE_PATHS from './file-paths.js';
 
 const childProcessExec = node_util.promisify(node_child_process.exec);
 const { stdin, stdout, stderr } = node_process;
-const hashSha256 = crypto.createHash('sha256');
 const fmt = formatter.basicTerminal;
 
 class Logger {
@@ -163,17 +162,23 @@ class Logger {
             this.flushedStep++;
             const latestStep = this.steps[this.flushedStep];
             const latestStepStr = JSON.stringify(latestStep, undefined, 0);
-            stepsToFlush.push({ ...latestStep, data: latestStepStr });
+            const hashInput = `c:${latestStep.c}|t:${latestStep.t}|v:${latestStep.v}|m:${latestStep.m || ''}|i:${latestStep.i}`;
+            const hashSha256 = crypto.createHash('sha256');
+            hashSha256.update(hashInput);
+            const hash = hashSha256.digest('hex').slice(0, 8);
+            stepsToFlush.push({ ...latestStep, hash });
             out += `${latestStepStr}\n`
         }
         if (!this.configJson.disableAnonymisedMetricsLogging) {
-            const metricsBody = JSON.stringify({
+            const metricsBody = {
                 events: stepsToFlush,
-            });
+            };
+            console.log(metricsBody);
+            const metricsBodyStr = JSON.stringify(metricsBody);
             const fetchPromise = fetch(
                 this.configJson.metricsUrl, {
                     method: 'POST',
-                    body: metricsBody,
+                    body: metricsBodyStr,
                     headers: {
                         'Content-Type': 'application/json',
                     },
