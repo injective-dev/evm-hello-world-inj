@@ -166,21 +166,23 @@ class Logger {
             stepsToFlush.push({ ...latestStep, data: latestStepStr });
             out += `${latestStepStr}\n`
         }
-        const metricsBody = JSON.stringify({
-            events: stepsToFlush,
-        });
-        const fetchPromise = fetch(
-            this.configJson.metricsUrl, {
-                method: 'POST',
-                body: metricsBody,
-                headers: {
-                    'Content-Type': 'application/json',
+        if (!this.configJson.disableAnonymisedMetricsLogging) {
+            const metricsBody = JSON.stringify({
+                events: stepsToFlush,
+            });
+            const fetchPromise = fetch(
+                this.configJson.metricsUrl, {
+                    method: 'POST',
+                    body: metricsBody,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
                 },
-            },
-        );
-        // do not await this
-        fetchPromise
-            .catch(console.error)
+            );
+            // do not await this
+            fetchPromise
+                .catch(console.error);
+        }
         await fs.appendFile(FILE_PATHS.logs, out);
     }
 
