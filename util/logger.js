@@ -242,9 +242,11 @@ class Logger {
             'scriptBegin',
             ...strings,
         );
-        const fileLine = this.#getStackFileLine();
-        if (fileLine) {
-            this.loggerJumpToFileLine(fileLine);
+        if (!this.configJson.disableAutoFileLineOpen) {
+            const fileLine = this.#getStackFileLine();
+            if (fileLine) {
+                this.loggerJumpToFileLine(fileLine);
+            }
         }
         return ret;
     }
