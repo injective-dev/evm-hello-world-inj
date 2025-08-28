@@ -16,7 +16,13 @@
 - [x] logging utility methods
     - log message
     - save locally to disk
-- [ ] save remotely (anon)
+- [x] save remotely (anon)
+    - config to opt out
+	- save to google app script
+	- perf opt with debounce
+	- perf optimisation
+	- hash for redumentary spam protection
+	- various logBase updates to make saved format more useful for later analysis
 - [ ] analyse remote logs (metrics)
 - [x] tutorial steps script
     - pause 
@@ -31,6 +37,10 @@
     - templates can be used to spin up more hello world repos or other accompanying demo repos
 
 ## Specific features for this Hello World
+
+0.5.0 feedback
+
+- TODO
 
 v0.4.2 feedback
 
