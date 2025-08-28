@@ -1,4 +1,5 @@
 import node_url from 'node:url';
+import FILE_PATHS from './file-paths.js';
 
 const { fileURLToPath } = node_url;
 const __filename = fileURLToPath(import.meta.url);
@@ -86,6 +87,7 @@ function forTerminal(msgType, ...strings) {
             ];
             break;
         case 'SECTION':
+        case 'SECTIONWW':
             out = [
                 CHARS.SECTION + ANSI.BRIGHT + ANSI.FG_PURPLE,
                 firstStr,
@@ -193,15 +195,21 @@ function getStackFileLine() {
         ?.stack
         ?.split('at ')
         .slice(1)
-        .map((s) => (
-            s
-                .split('file://')[1]
-                ?.trim()
-                .split(')')[0]
-        ))
+        .map((s) => {
+            const lineParts1 = s.split('file://')[1];
+            if (lineParts1) {
+                return lineParts1
+                    ?.trim()
+                    .split(')')[0];
+            } else {
+                // this is likely to happen for lines with 'node:' instead of a file on disk
+                return skippedStackFiles[0]; // intention: so it gets skipped
+            }
+        })
         .filter((s) => (
             !(s?.startsWith(skippedStackFiles[0])) &&
-            !(s?.startsWith(skippedStackFiles[1]))
+            !(s?.startsWith(skippedStackFiles[1])) &&
+            s?.startsWith(FILE_PATHS.rootDir)
         ));
     return out[0];
 }

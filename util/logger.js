@@ -8,26 +8,47 @@ import fs_callbacks from 'node:fs';
 
 import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
+import { Debounce } from './perf.js';
 
 const childProcessExec = node_util.promisify(node_child_process.exec);
 const { stdin, stdout, stderr } = node_process;
-const hashSha256 = crypto.createHash('sha256');
 const fmt = formatter.basicTerminal;
 
 class Logger {
     static #versionStamp = '';
-    step = -1;
-    flushedStep = -1;
-    steps = [];
     anonId = '';
     configJson = null;
     #initHasBeenCalled = false;
+    #flushRemoteDebounce = null;
+    steps = [];
+    #step = -1;
+    #flushedStepDisk = -1;
+    #flushedStepRemote = -1;
+
     f = {
         bold: (s) => ( this.#noAnsi() ? s : fmt.bold(s) ),
         italic: (s) => ( this.#noAnsi() ? s : fmt.italic(s) ),
         url: (s) => ( this.#noAnsi() ? s : fmt.url(s) ),
         highlighter: (s) => ( this.#noAnsi() ? s : fmt.highlighterYellow(s) ),
     };
+
+    #categoryShortForms = {
+        'LOG': 'L',
+        'CLEAR': 'C',
+        'WAITBEGIN': 'WB',
+        'WAITEND': 'WE',
+        'SETUPBEGIN': 'UB',
+        'SCRIPTBEGIN': 'SB',
+        'SECTION': 'S',
+        'SECTIONWW': 'SW',
+        'REMINDER': 'R',
+        'SETUPEND': 'UE',
+        'SCRIPTEND': 'SE',
+        'ERROR': 'E',
+        'INFOBOX': 'I',
+        'INFOBOXWW': 'IW',
+        'SUMMARY': 'SY',
+    }
 
     /**
      * You **must** await `init` **before** using logger.
@@ -56,7 +77,8 @@ class Logger {
             FILE_PATHS.configJson,
         );
         this.configJson = JSON.parse(configJsonStr || '{}');
-        this.anonId = this.configJson.anonId
+        this.anonId = this.configJson.anonId;
+        this.#flushRemoteDebounce = new Debounce(2e3);
         if (!this.anonId) {
             // generate new one if not currently set
             this.anonId = Logger.generateAnonId(7);
@@ -90,11 +112,25 @@ class Logger {
             FILE_PATHS.packageJson,
         );
         const packageJson = JSON.parse(packageJsonStr);
-        const gitRefsHeadMain = await fs.readFile(
-            FILE_PATHS.gitRefsHeadMain,
+        const gitRefsHead = await fs.readFile(
+            FILE_PATHS.gitHead,
         );
-        const gitCommitHash = gitRefsHeadMain.toString().trim().substring(0, 7);
-        Logger.#versionStamp = `${packageJson.version}-${gitCommitHash}`;
+        const gitBranchName = gitRefsHead.toString().trim().replace('ref: refs/heads/', '');
+        let gitRefsCurrentBranchFileName = '';
+        const isMainBranch = (gitBranchName === 'main');
+        if (isMainBranch) {
+            gitRefsCurrentBranchFileName = FILE_PATHS.gitRefsHeadMain;
+        } else {
+            gitRefsCurrentBranchFileName = FILE_PATHS.getGitRefPathForBranch(gitBranchName);
+        }
+        const gitCommitHash = await fs.readFile(
+            gitRefsCurrentBranchFileName,
+        );
+        const gitCommitHashStr = gitCommitHash.toString().trim().substring(0, 7);
+        const gitHashAndBranch = isMainBranch ?
+            gitCommitHashStr :
+            `${gitCommitHashStr}-${gitBranchName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        Logger.#versionStamp = `${packageJson.version}-${gitHashAndBranch}`;
         return Logger.#versionStamp;
     }
 
@@ -125,26 +161,37 @@ class Logger {
      * @param  {...any} strings 1 or more strings to output
      * @returns the console.log return value
      */
-    logBase(category, ...strings) {
+    #logBase(category, ...strings) {
         const [msg] = [...strings];
-        if (
-            category !== 'waitBegin' &&
-            category !== 'waitEnd'
-        ) {
+        const isNotWait = (category !== 'waitBegin' &&
+            category !== 'waitEnd');
+        if (isNotWait) {
             if (!msg || typeof msg !== 'string') {
                 console.error('No message provided to log command');
             }
         }
+        const categoryShortForm = this.#categoryShortForms[(category || 'log').toUpperCase()];
+        const fileLine = this.#getStackFileLine();
+        console.log(category, fileLine);
+        const msgPrefix = fileLine?.split(/[\/\\]/)?.at(-1)?.split(':')?.slice(0, 2)?.join(':');
+        const msgSuffix = (msg || '').slice(0, 8);
         const logData = {
             t: Date.now(),
-            c: category || 'log',
+            c: categoryShortForm,
             v: Logger.#versionStamp,
             i: this.anonId,
-            m: msg,
+            m: `${msgPrefix || ''}-${msgSuffix || ''}`,
         };
-        this.step++;
+        this.#step++;
         this.steps.push(logData);
-        this.flush(); // intentionally not await-ed even though it is async
+        const shouldForceFlush = isNotWait &&
+            (category === 'section' ||
+            category === 'scriptEnd' ||
+            category === 'error' ||
+            category === 'setupBegin' ||
+            category === 'setupEnd');
+        console.log('logBase category, shouldForceFlush:', category, shouldForceFlush);
+        this.flush(shouldForceFlush); // intentionally not await-ed even though it is async
         if (!msg) {
             return;
         }
@@ -154,16 +201,69 @@ class Logger {
     }
 
     /**
-     * writes the latest log message to disk
+     * writes the latest log message to disk and remote
+     * debouncing is present for writing to remote, such as to allow multiple log messages to accrue
+     * before each write to remote as a perf/ bandwidth optimisation
+     * @param {boolean} force when true, debounce is logic is skipped (default is false)
      */
-    async flush() {
+    async flush(force = false) {
+        const shouldInvokeFlushRemote =
+            (!this.configJson.disableAnonymisedMetricsLogging) &&
+            (force || this.#flushRemoteDebounce.attempt());
+        console.log('flush shouldInvokeFlushRemote:', shouldInvokeFlushRemote);
+        if (shouldInvokeFlushRemote) {
+            this.flushRemote(); // intentionally do not `await` any flushRemote invocations
+        } // else do nothing, will need to be called again - that is the point of debouncing
+
+        await this.flushDisk();
+    }
+
+    /**
+     * writes all log message(s), that have accrued since its last invocation, to disk
+     */
+    async flushDisk() {
         let out = '';
-        while (this.flushedStep < this.step) {
-            this.flushedStep++;
-            const latestStep = JSON.stringify(this.steps[this.flushedStep], undefined, 0);
-            out += `${latestStep}\n`
+        while (this.#flushedStepDisk < this.#step) {
+            this.#flushedStepDisk++;
+            const latestStep = this.steps[this.#flushedStepDisk];
+            const latestStepStr = JSON.stringify(latestStep, undefined, 0);
+            out += `${latestStepStr}\n`
         }
         await fs.appendFile(FILE_PATHS.logs, out);
+    }
+
+    /**
+     * writes all log message(s), that have accrued since its last invocation, to remote
+     */
+    async flushRemote() {
+        const stepsToFlush = [];
+        while (this.#flushedStepRemote < this.#step) {
+            this.#flushedStepRemote++;
+            const latestStep = this.steps[this.#flushedStepRemote];
+            const hashInput = `c:${latestStep.c}|t:${latestStep.t}|v:${latestStep.v}|m:${latestStep.m || ''}|i:${latestStep.i}`;
+            const hashSha256 = crypto.createHash('sha256');
+            hashSha256.update(hashInput);
+            const hash = hashSha256.digest('hex').slice(0, 8);
+            stepsToFlush.push({ ...latestStep, hash });
+        }
+        console.log('flushRemote:', stepsToFlush.length);
+        if (stepsToFlush.length < 1) {
+            return; // there's no reason to send a request
+        }
+        const metricsBody = {
+            events: stepsToFlush,
+        };
+        const metricsBodyStr = JSON.stringify(metricsBody);
+        const fetchPromise = fetch(
+            this.configJson.metricsUrl, {
+                method: 'POST',
+                body: metricsBodyStr,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        fetchPromise.catch(console.error);
     }
 
     #getStackFileLine() {
@@ -178,18 +278,18 @@ class Logger {
      * simply prompt user to hit enter in the terminal
      */
     async logWait() {
-        this.logBase('waitBegin');
+        this.#logBase('waitBegin');
         await this.askQuestion('(Hit the "return" key when ready to proceed)');
 
         // delete the line above
         if (!this.configJson.ansiDisabled) {
             stdout.write(...formatter.forTerminal('CLEAR'));
         }
-        this.logBase('waitEnd');
+        this.#logBase('waitEnd');
     }
 
     async log(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'log',
             ...strings,
         );
@@ -197,7 +297,7 @@ class Logger {
     }
 
     async logSetupBegin(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'setupBegin',
             ...strings,
         );
@@ -205,7 +305,7 @@ class Logger {
     }
 
     async logSetupEnd(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'setupEnd',
             ...strings,
         );
@@ -213,19 +313,21 @@ class Logger {
     }
 
     async logScriptBegin(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'scriptBegin',
             ...strings,
         );
-        const fileLine = this.#getStackFileLine();
-        if (fileLine) {
-            this.loggerJumpToFileLine(fileLine);
+        if (!this.configJson.disableAutoFileLineOpen) {
+            const fileLine = this.#getStackFileLine();
+            if (fileLine) {
+                this.loggerJumpToFileLine(fileLine);
+            }
         }
         return ret;
     }
 
     async logScriptEnd(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'scriptEnd',
             ...strings,
         );
@@ -241,19 +343,26 @@ class Logger {
     }
 
     async logSection(...strings) {
-        const ret = await this.logSectionWithoutWait(...strings);
-        await this.logWait();
-        return ret;
+        return this.#logSectionImpl(true, ...strings);
+    }
+
+    async logSectionAndWait(...strings) {
+        return this.#logSectionImpl(true, ...strings);
     }
 
     async logSectionWithoutWait(...strings) {
+        return this.#logSectionImpl(false, ...strings);
+    }
+
+    async #logSectionImpl(shouldWait, ...strings) {
         console.log('');
-        const ret = this.logBase(
-            'section',
+        const ret = this.#logBase(
+            (shouldWait ? 'section' : 'sectionWW'),
             ...strings,
         );
         const fileLine = this.#getStackFileLine();
         console.log('↪️', fileLine);
+        shouldWait && await this.logWait();
         return ret;
     }
 
@@ -266,7 +375,7 @@ class Logger {
     }
 
     logError(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'error',
             ...strings,
         );
@@ -275,14 +384,17 @@ class Logger {
     }
 
     async logInfoBox(title, ...strings) {
-        await this.logWait();
-        const ret = await this.logInfoBoxWithoutWait(title, ...strings);
-        return ret;
+        return this.#logInfoBoxImpl(true, title, ...strings);
     }
 
     async logInfoBoxWithoutWait(title, ...strings) {
-        const ret = this.logBase(
-            'infoBox',
+        return this.#logInfoBoxImpl(false, title, ...strings);
+    }
+
+    async #logInfoBoxImpl(shouldWait, title, ...strings) {
+        shouldWait && await this.logWait();
+        const ret = this.#logBase(
+            (shouldWait ? 'infoBox' : 'infoBoxWW'),
             title,
             ...strings,
         );
