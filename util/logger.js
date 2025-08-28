@@ -32,6 +32,23 @@ class Logger {
         highlighter: (s) => ( this.#noAnsi() ? s : fmt.highlighterYellow(s) ),
     };
 
+    #categoryShortForms = {
+        'LOG': 'L',
+        'CLEAR': 'C',
+        'WAITBEGIN': 'WB',
+        'WAITEND': 'WE',
+        'SETUPBEGIN': 'UB',
+        'SCRIPTBEGIN': 'SB',
+        'SECTION': 'S',
+        'SECTIONWW': 'SW',
+        'REMINDER': 'R',
+        'SETUPEND': 'UE',
+        'SCRIPTEND': 'SE',
+        'ERROR': 'E',
+        'INFOBOX': 'I',
+        'SUMMARY': 'SY',
+    }
+
     /**
      * You **must** await `init` **before** using logger.
      *
@@ -152,9 +169,10 @@ class Logger {
                 console.error('No message provided to log command');
             }
         }
+        const categoryShortForm = this.#categoryShortForms[(category || 'log').toUpperCase()];
         const logData = {
             t: Date.now(),
-            c: category || 'log',
+            c: categoryShortForm,
             v: Logger.#versionStamp,
             i: this.anonId,
             m: msg,
