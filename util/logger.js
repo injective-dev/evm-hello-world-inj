@@ -124,12 +124,11 @@ class Logger {
      * @param  {...any} strings 1 or more strings to output
      * @returns the console.log return value
      */
-    logBase(category, ...strings) {
+    #logBase(category, ...strings) {
         const [msg] = [...strings];
-        if (
-            category !== 'waitBegin' &&
-            category !== 'waitEnd'
-        ) {
+        const isNotWait = (category !== 'waitBegin' &&
+            category !== 'waitEnd');
+        if (isNotWait) {
             if (!msg || typeof msg !== 'string') {
                 console.error('No message provided to log command');
             }
@@ -203,18 +202,18 @@ class Logger {
      * simply prompt user to hit enter in the terminal
      */
     async logWait() {
-        this.logBase('waitBegin');
+        this.#logBase('waitBegin');
         await this.askQuestion('(Hit the "return" key when ready to proceed)');
 
         // delete the line above
         if (!this.configJson.ansiDisabled) {
             stdout.write(...formatter.forTerminal('CLEAR'));
         }
-        this.logBase('waitEnd');
+        this.#logBase('waitEnd');
     }
 
     async log(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'log',
             ...strings,
         );
@@ -222,7 +221,7 @@ class Logger {
     }
 
     async logSetupBegin(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'setupBegin',
             ...strings,
         );
@@ -230,7 +229,7 @@ class Logger {
     }
 
     async logSetupEnd(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'setupEnd',
             ...strings,
         );
@@ -238,7 +237,7 @@ class Logger {
     }
 
     async logScriptBegin(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'scriptBegin',
             ...strings,
         );
@@ -252,7 +251,7 @@ class Logger {
     }
 
     async logScriptEnd(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'scriptEnd',
             ...strings,
         );
@@ -268,19 +267,26 @@ class Logger {
     }
 
     async logSection(...strings) {
-        const ret = await this.logSectionWithoutWait(...strings);
-        await this.logWait();
-        return ret;
+        return this.#logSectionImpl(true, ...strings);
+    }
+
+    async logSectionAndWait(...strings) {
+        return this.#logSectionImpl(true, ...strings);
     }
 
     async logSectionWithoutWait(...strings) {
+        return this.#logSectionImpl(false, ...strings);
+    }
+
+    async #logSectionImpl(shouldWait, ...strings) {
         console.log('');
-        const ret = this.logBase(
-            'section',
+        const ret = this.#logBase(
+            (shouldWait ? 'section' : 'sectionWW'),
             ...strings,
         );
         const fileLine = this.#getStackFileLine();
         console.log('↪️', fileLine);
+        shouldWait && await this.logWait();
         return ret;
     }
 
@@ -293,7 +299,7 @@ class Logger {
     }
 
     logError(...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'error',
             ...strings,
         );
@@ -308,7 +314,7 @@ class Logger {
     }
 
     async logInfoBoxWithoutWait(title, ...strings) {
-        const ret = this.logBase(
+        const ret = this.#logBase(
             'infoBox',
             title,
             ...strings,
