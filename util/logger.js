@@ -171,12 +171,16 @@ class Logger {
             }
         }
         const categoryShortForm = this.#categoryShortForms[(category || 'log').toUpperCase()];
+        const fileLine = this.#getStackFileLine();
+        console.log(category, fileLine);
+        const msgPrefix = fileLine?.split(/[\/\\]/)?.at(-1)?.split(':')?.slice(0, 2)?.join(':');
+        const msgSuffix = (msg || '').slice(0, 8);
         const logData = {
             t: Date.now(),
             c: categoryShortForm,
             v: Logger.#versionStamp,
             i: this.anonId,
-            m: msg,
+            m: `${msgPrefix || ''}-${msgSuffix || ''}`,
         };
         this.#step++;
         this.steps.push(logData);
