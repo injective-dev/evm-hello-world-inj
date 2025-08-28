@@ -46,6 +46,7 @@ class Logger {
         'SCRIPTEND': 'SE',
         'ERROR': 'E',
         'INFOBOX': 'I',
+        'INFOBOXWW': 'IW',
         'SUMMARY': 'SY',
     }
 
@@ -379,14 +380,17 @@ class Logger {
     }
 
     async logInfoBox(title, ...strings) {
-        await this.logWait();
-        const ret = await this.logInfoBoxWithoutWait(title, ...strings);
-        return ret;
+        return this.#logInfoBoxImpl(true, title, ...strings);
     }
 
     async logInfoBoxWithoutWait(title, ...strings) {
+        return this.#logInfoBoxImpl(false, title, ...strings);
+    }
+
+    async #logInfoBoxImpl(shouldWait, title, ...strings) {
+        shouldWait && await this.logWait();
         const ret = this.#logBase(
-            'infoBox',
+            (shouldWait ? 'infoBox' : 'infoBoxWW'),
             title,
             ...strings,
         );
