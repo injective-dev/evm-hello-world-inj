@@ -94,11 +94,25 @@ class Logger {
             FILE_PATHS.packageJson,
         );
         const packageJson = JSON.parse(packageJsonStr);
-        const gitRefsHeadMain = await fs.readFile(
-            FILE_PATHS.gitRefsHeadMain,
+        const gitRefsHead = await fs.readFile(
+            FILE_PATHS.gitHead,
         );
-        const gitCommitHash = gitRefsHeadMain.toString().trim().substring(0, 7);
-        Logger.#versionStamp = `${packageJson.version}-${gitCommitHash}`;
+        const gitBranchName = gitRefsHead.toString().trim().replace('ref: refs/heads/', '');
+        let gitRefsCurrentBranchFileName = '';
+        const isMainBranch = (gitBranchName === 'main');
+        if (isMainBranch) {
+            gitRefsCurrentBranchFileName = FILE_PATHS.gitRefsHeadMain;
+        } else {
+            gitRefsCurrentBranchFileName = FILE_PATHS.getGitRefPathForBranch(gitBranchName);
+        }
+        const gitCommitHash = await fs.readFile(
+            gitRefsCurrentBranchFileName,
+        );
+        const gitCommitHashStr = gitCommitHash.toString().trim().substring(0, 7);
+        const gitHashAndBranch = isMainBranch ?
+            gitCommitHashStr :
+            `${gitCommitHashStr}-${gitBranchName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+        Logger.#versionStamp = `${packageJson.version}-${gitHashAndBranch}`;
         return Logger.#versionStamp;
     }
 
