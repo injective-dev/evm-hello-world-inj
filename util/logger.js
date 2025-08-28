@@ -8,6 +8,7 @@ import fs_callbacks from 'node:fs';
 
 import formatter from './formatter.js';
 import FILE_PATHS from './file-paths.js';
+import { Debounce } from './perf.js';
 
 const childProcessExec = node_util.promisify(node_child_process.exec);
 const { stdin, stdout, stderr } = node_process;
@@ -15,12 +16,15 @@ const fmt = formatter.basicTerminal;
 
 class Logger {
     static #versionStamp = '';
-    step = -1;
-    flushedStep = -1;
-    steps = [];
     anonId = '';
     configJson = null;
     #initHasBeenCalled = false;
+    #flushRemoteDebounce = null;
+    steps = [];
+    #step = -1;
+    #flushedStepDisk = -1;
+    #flushedStepRemote = -1;
+
     f = {
         bold: (s) => ( this.#noAnsi() ? s : fmt.bold(s) ),
         italic: (s) => ( this.#noAnsi() ? s : fmt.italic(s) ),
@@ -55,7 +59,8 @@ class Logger {
             FILE_PATHS.configJson,
         );
         this.configJson = JSON.parse(configJsonStr || '{}');
-        this.anonId = this.configJson.anonId
+        this.anonId = this.configJson.anonId;
+        this.#flushRemoteDebounce = new Debounce(2e3);
         if (!this.anonId) {
             // generate new one if not currently set
             this.anonId = Logger.generateAnonId(7);
@@ -140,9 +145,16 @@ class Logger {
             i: this.anonId,
             m: msg,
         };
-        this.step++;
+        this.#step++;
         this.steps.push(logData);
-        this.flush(); // intentionally not await-ed even though it is async
+        const shouldForceFlush = isNotWait &&
+            (category === 'section' ||
+            category === 'scriptEnd' ||
+            category === 'error' ||
+            category === 'setupBegin' ||
+            category === 'setupEnd');
+        console.log('logBase category, shouldForceFlush:', category, shouldForceFlush);
+        this.flush(shouldForceFlush); // intentionally not await-ed even though it is async
         if (!msg) {
             return;
         }
@@ -152,42 +164,69 @@ class Logger {
     }
 
     /**
-     * writes the latest log message to disk
+     * writes the latest log message to disk and remote
+     * debouncing is present for writing to remote, such as to allow multiple log messages to accrue
+     * before each write to remote as a perf/ bandwidth optimisation
+     * @param {boolean} force when true, debounce is logic is skipped (default is false)
      */
-    async flush() {
+    async flush(force = false) {
+        const shouldInvokeFlushRemote =
+            (!this.configJson.disableAnonymisedMetricsLogging) &&
+            (force || this.#flushRemoteDebounce.attempt());
+        console.log('flush shouldInvokeFlushRemote:', shouldInvokeFlushRemote);
+        if (shouldInvokeFlushRemote) {
+            this.flushRemote(); // intentionally do not `await` any flushRemote invocations
+        } // else do nothing, will need to be called again - that is the point of debouncing
+
+        await this.flushDisk();
+    }
+
+    /**
+     * writes all log message(s), that have accrued since its last invocation, to disk
+     */
+    async flushDisk() {
         let out = '';
-        const stepsToFlush = [];
-        while (this.flushedStep < this.step) {
-            this.flushedStep++;
-            const latestStep = this.steps[this.flushedStep];
+        while (this.#flushedStepDisk < this.#step) {
+            this.#flushedStepDisk++;
+            const latestStep = this.steps[this.#flushedStepDisk];
             const latestStepStr = JSON.stringify(latestStep, undefined, 0);
+            out += `${latestStepStr}\n`
+        }
+        await fs.appendFile(FILE_PATHS.logs, out);
+    }
+
+    /**
+     * writes all log message(s), that have accrued since its last invocation, to remote
+     */
+    async flushRemote() {
+        const stepsToFlush = [];
+        while (this.#flushedStepRemote < this.#step) {
+            this.#flushedStepRemote++;
+            const latestStep = this.steps[this.#flushedStepRemote];
             const hashInput = `c:${latestStep.c}|t:${latestStep.t}|v:${latestStep.v}|m:${latestStep.m || ''}|i:${latestStep.i}`;
             const hashSha256 = crypto.createHash('sha256');
             hashSha256.update(hashInput);
             const hash = hashSha256.digest('hex').slice(0, 8);
             stepsToFlush.push({ ...latestStep, hash });
-            out += `${latestStepStr}\n`
         }
-        if (!this.configJson.disableAnonymisedMetricsLogging) {
-            const metricsBody = {
-                events: stepsToFlush,
-            };
-            console.log(metricsBody);
-            const metricsBodyStr = JSON.stringify(metricsBody);
-            const fetchPromise = fetch(
-                this.configJson.metricsUrl, {
-                    method: 'POST',
-                    body: metricsBodyStr,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+        console.log('flushRemote:', stepsToFlush.length);
+        if (stepsToFlush.length < 1) {
+            return; // there's no reason to send a request
+        }
+        const metricsBody = {
+            events: stepsToFlush,
+        };
+        const metricsBodyStr = JSON.stringify(metricsBody);
+        const fetchPromise = fetch(
+            this.configJson.metricsUrl, {
+                method: 'POST',
+                body: metricsBodyStr,
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-            );
-            // do not await this
-            fetchPromise
-                .catch(console.error);
-        }
-        await fs.appendFile(FILE_PATHS.logs, out);
+            },
+        );
+        fetchPromise.catch(console.error);
     }
 
     #getStackFileLine() {

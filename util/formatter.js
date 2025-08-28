@@ -86,6 +86,7 @@ function forTerminal(msgType, ...strings) {
             ];
             break;
         case 'SECTION':
+        case 'SECTIONWW':
             out = [
                 CHARS.SECTION + ANSI.BRIGHT + ANSI.FG_PURPLE,
                 firstStr,
