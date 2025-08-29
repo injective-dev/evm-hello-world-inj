@@ -113,9 +113,12 @@ process.once('SIGINT', async () => {
 process.once('SIGTERM', async () => {
     await logger.logError('setup', 'sigterm');
 });
+
 async function initDotEnv() {
     const results = await promptUser();
     await updateFiles(results);
+
+    logger.flush(true);
 }
 
 initDotEnv();

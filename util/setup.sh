@@ -14,4 +14,7 @@ bash ${UTIL_DIR}/init-files-after.sh
 
 # nohup so that installation runs in the background
 nohup ${UTIL_DIR}/install-dependencies.sh &
+
 node ${UTIL_DIR}/prompt-values.js
+
+node ${UTIL_DIR}/setup-complete.js

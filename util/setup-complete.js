@@ -25,8 +25,10 @@ process.once('SIGINT', async () => {
 process.once('SIGTERM', async () => {
     await logger.logError('setup', 'sigterm');
 });
+
 setupComplete().then(async () => {
     await logger.logSetupEnd('setup', 'Set up complete!');
+    logger.flush(true);
     console.log(
         'To begin, run the following command for the first step:\n',
         logger.f.bold('./00-fund.js'),
