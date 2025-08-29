@@ -269,12 +269,18 @@ class Logger {
             this.configJson.metricsUrl, {
                 method: 'POST',
                 body: metricsBodyStr,
+                signal: AbortSignal.timeout(1e3), // wait for up to 1.5s only
                 headers: {
                     'Content-Type': 'application/json',
                 },
             },
         );
-        fetchPromise.catch(console.error);
+        fetchPromise.catch((ex) => {
+            if (ex?.name === 'TimeoutError') {
+                return; // we explicitly do not want to log this
+            }
+            console.error(ex);
+        });
     }
 
     /**
