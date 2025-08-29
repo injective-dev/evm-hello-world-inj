@@ -38,9 +38,20 @@
 
 ## Specific features for this Hello World
 
-0.5.0 feedback
+v0.5.1 feedback
 
-- TODO
+- [ ] TODO
+
+v0.5.0 feedback
+
+- [x] fix bug in stats where ./06-stats.js always shows zero scripts --> `2bf929a`
+- [x] fix bug in setup script where setup complete isn't getting called -> `dd24897`
+- [x] remove extraneous console.logs cluttering outputs --> `cd7c7c2`
+- [x] perf improvement by setting a timeout of requests --> `4dddf27`
+- [x] add more comment-docs for function in logger --> `57775b8`
+- [x] feedback to engineering about faucet false positives for spamming
+- [ ] consider read logs from disk to write to remote as further perf opt
+- [ ] consider refector to split stats analysis functions into separate class
 
 v0.4.2 feedback
 
