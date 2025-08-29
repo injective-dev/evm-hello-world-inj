@@ -25,6 +25,10 @@ class Logger {
     #flushedStepDisk = -1;
     #flushedStepRemote = -1;
 
+    /**
+     * Quick-access aliases for formatting for printing to terminal.
+     * ANSI char codes used by default (if no opted out of in config).
+     */
     f = {
         bold: (s) => ( this.#noAnsi() ? s : fmt.bold(s) ),
         italic: (s) => ( this.#noAnsi() ? s : fmt.italic(s) ),
@@ -64,7 +68,8 @@ class Logger {
     }
 
     /**
-     * Logger obtains its version stamp and anonymous ID
+     * Logger obtains its version stamp and anonymous ID.
+     *
      * @returns nil
      */
     async init() {
@@ -91,7 +96,8 @@ class Logger {
     }
 
     /**
-     * Generates a random hexadecimal string for use as an anonymous ID in logging
+     * Generates a random hexadecimal string for use as an anonymous ID in logging.
+     *
      * @param {Number} length number of chars needed
      * @returns a string of specified length
      */
@@ -106,6 +112,7 @@ class Logger {
      * Constructs a version stamp based on the version number and
      * git commit hash.
      * Uses cached value is set.
+     *
      * @returns {string} the version stamp constructed
      */
     static async getVersionStamp() {
@@ -140,8 +147,9 @@ class Logger {
     }
 
     /**
-     * If config for `ansiDisabled` is set to `true`, the output is the same as the input strings
-     * Otherwise invokes `formatter.forTerminal`
+     * If config for `ansiDisabled` is set to `true`, the output is the same as the input strings.
+     * Otherwise invokes `formatter.forTerminal`.
+     *
      * @param {string} msgType 
      * @param  {...string} strings 
      * @returns same output type as `formatter.forTerminal`
@@ -161,7 +169,9 @@ class Logger {
     }
 
     /**
-     * Logs a new log message
+     * Logs a new log message.
+     * There are multiple other log functions which call this function as their underlying implementation.
+     *
      * @param {string} category of the log
      * @param  {...any} strings 1 or more strings to output
      * @returns the console.log return value
@@ -206,9 +216,9 @@ class Logger {
     }
 
     /**
-     * writes the latest log message to disk and remote
-     * debouncing is present for writing to remote, such as to allow multiple log messages to accrue
-     * before each write to remote as a perf/ bandwidth optimisation
+     * Writes the latest log message to disk and remote.
+     * Debouncing is present for writing to remote, such as to allow multiple log messages to accrue
+     * before each write to remote as a perf/ bandwidth optimisation.
      * @param {boolean} force when true, debounce is logic is skipped (default is false)
      */
     async flush(force = false) {
@@ -224,7 +234,7 @@ class Logger {
     }
 
     /**
-     * writes all log message(s), that have accrued since its last invocation, to disk
+     * Writes all log message(s), that have accrued since its last invocation, to disk.
      */
     async flushDisk() {
         let out = '';
@@ -238,7 +248,7 @@ class Logger {
     }
 
     /**
-     * writes all log message(s), that have accrued since its last invocation, to remote
+     * Writes all log message(s), that have accrued since its last invocation, to remote.
      */
     async flushRemote() {
         const stepsToFlush = [];
@@ -271,6 +281,12 @@ class Logger {
         fetchPromise.catch(console.error);
     }
 
+    /**
+     * Obtains the current position within the calling function.
+     *
+     * @returns a file path followed by (optionally) a line number and column number.
+     *          e.g. `/some/dir/00-fund.js:10:15`
+     */
     #getStackFileLine() {
         let stackFileLine = formatter.getStackFileLine();
         if (stackFileLine) {
@@ -280,7 +296,8 @@ class Logger {
     }
 
     /**
-     * simply prompt user to hit enter in the terminal
+     * Simply prompt user to hit enter in the terminal.
+     * Pauses execution until that occurs.
      */
     async logWait() {
         this.#logBase('waitBegin');
@@ -406,6 +423,12 @@ class Logger {
         return ret;
     }
 
+    /**
+     * User is prompted to type an input into stdin (usually the terminal), then hit the enter key.
+     *
+     * @param {string} prompt what to print in terminal before the the user is asked to type an input
+     * @returns the input value typed by the user
+     */
     async askQuestion(prompt = '> ') {
         const rlPrompt = readline.createInterface({
             input: stdin,
@@ -416,6 +439,17 @@ class Logger {
         return inputValue;
     }
 
+    /**
+     * Reads in the log file, and parses it one line at a time.
+     * Discard all messages before the final occurrence of an "UB"
+     * (which is a `setupBegin` category message).
+     * So only provides stats of the most recent run.
+     * Used in statistics analysis.
+     *
+     * TODO consider refector to split stats analysis functions into separate class
+     *
+     * @returns an array of log objects
+     */
     async logsLoad() {
         return new Promise((resolve) => {
             let logs = [];
@@ -437,6 +471,16 @@ class Logger {
         });
     }
 
+    /**
+     * Produce human-readable summary stats of the logs,
+     * suitable for printing to terminal.
+     * Used in statistics analysis.
+     *
+     * TODO consider refector to split stats analysis functions into separate class
+     *
+     * @param {Array<Object>} logs a list of log objects, obtain from logsLoad()
+     * @returns summary text
+     */
     async logsSummary(logs) {
         const scripts = {};
         const summary = {
@@ -567,6 +611,11 @@ class Logger {
         return aggregatedScripts;
     }
 
+    /**
+     * Pause execution for a specified duration.
+     *
+     * @param {Number} ms duration to wait, in milliseconds
+     */
     async delay(ms) {
         if (typeof ms !== 'number' || isNaN(ms) || ms <= 0) {
             ms = 1;
