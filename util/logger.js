@@ -187,7 +187,6 @@ class Logger {
         }
         const categoryShortForm = this.#categoryShortForms[(category || 'log').toUpperCase()];
         const fileLine = this.#getStackFileLine();
-        console.log(category, fileLine);
         const msgPrefix = fileLine?.split(/[\/\\]/)?.at(-1)?.split(':')?.slice(0, 2)?.join(':');
         const msgSuffix = (msg || '').slice(0, 8);
         const logData = {
@@ -205,7 +204,6 @@ class Logger {
             category === 'error' ||
             category === 'setupBegin' ||
             category === 'setupEnd');
-        console.log('logBase category, shouldForceFlush:', category, shouldForceFlush);
         this.flush(shouldForceFlush); // intentionally not await-ed even though it is async
         if (!msg) {
             return;
@@ -225,7 +223,6 @@ class Logger {
         const shouldInvokeFlushRemote =
             (!this.configJson.disableAnonymisedMetricsLogging) &&
             (force || this.#flushRemoteDebounce.attempt());
-        console.log('flush shouldInvokeFlushRemote:', shouldInvokeFlushRemote);
         if (shouldInvokeFlushRemote) {
             this.flushRemote(); // intentionally do not `await` any flushRemote invocations
         } // else do nothing, will need to be called again - that is the point of debouncing
@@ -261,7 +258,6 @@ class Logger {
             const hash = hashSha256.digest('hex').slice(0, 8);
             stepsToFlush.push({ ...latestStep, hash });
         }
-        console.log('flushRemote:', stepsToFlush.length);
         if (stepsToFlush.length < 1) {
             return; // there's no reason to send a request
         }
