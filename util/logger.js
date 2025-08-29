@@ -224,7 +224,7 @@ class Logger {
             (!this.configJson.disableAnonymisedMetricsLogging) &&
             (force || this.#flushRemoteDebounce.attempt());
         if (shouldInvokeFlushRemote) {
-            this.flushRemote(); // intentionally do not `await` any flushRemote invocations
+            this.flushRemote(force); // intentionally do not `await` any flushRemote invocations
         } // else do nothing, will need to be called again - that is the point of debouncing
 
         await this.flushDisk();
@@ -247,7 +247,7 @@ class Logger {
     /**
      * Writes all log message(s), that have accrued since its last invocation, to remote.
      */
-    async flushRemote() {
+    async flushRemote(force = false) {
         const stepsToFlush = [];
         while (this.#flushedStepRemote < this.#step) {
             this.#flushedStepRemote++;
@@ -265,18 +265,20 @@ class Logger {
             events: stepsToFlush,
         };
         const metricsBodyStr = JSON.stringify(metricsBody);
-        const fetchPromise = fetch(
-            this.configJson.metricsUrl, {
-                method: 'POST',
-                body: metricsBodyStr,
-                signal: AbortSignal.timeout(1e3), // wait for up to 1.5s only
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+        const postOptionsSignal = force ?
+            AbortSignal.timeout(10e3) : // wait for up to 10s when forced
+            AbortSignal.timeout(1e3); // wait for up to 1s when not forced
+        const postOptions = {
+            method: 'POST',
+            body: metricsBodyStr,
+            signal: postOptionsSignal,
+            headers: {
+                'Content-Type': 'application/json',
             },
-        );
+        }
+        const fetchPromise = fetch(this.configJson.metricsUrl, postOptions);
         fetchPromise.catch((ex) => {
-            if (ex?.name === 'TimeoutError') {
+            if (!force && (ex?.name === 'TimeoutError')) {
                 return; // we explicitly do not want to log this
             }
             console.error(ex);
