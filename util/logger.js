@@ -426,7 +426,7 @@ class Logger {
             });
             rl.on('line', (lineStr) => {
                 const log = JSON.parse(lineStr);
-                if (log.c === 'setupBegin') {
+                if (log.c === 'UB') {
                     logs = []; // discard prior runs, we only want the latest
                 }
                 logs.push(log);
@@ -452,7 +452,8 @@ class Logger {
 
         // initial data
         logs.forEach((log) => {
-            const script = scripts[log.m] || {
+            const scriptName = log.m?.split('-')?.at(-1);
+            const script = scripts[scriptName] || {
                 beginCount: 0,
                 endCount: 0,
                 errorCount: 0,
@@ -461,8 +462,8 @@ class Logger {
             };
             let shouldAdd = false;
             switch (log.c) {
-                case 'setupBegin':
-                case 'scriptBegin':
+                case 'UB': // 'setupBegin':
+                case 'SB': // 'scriptBegin':
                     script.beginCount++;
                     script.beginCurrent = log.t;
                     script.beginTsFirst = Math.min(log.t, (script.beginTsFirst || Number.MAX_SAFE_INTEGER));
@@ -470,8 +471,8 @@ class Logger {
                     summary.beginTsFirst = Math.min(log.t, (summary.beginTsFirst || Number.MAX_SAFE_INTEGER));
                     shouldAdd = true;
                     break;
-                case 'setupEnd':
-                case 'scriptEnd':
+                case 'UE': // 'setupEnd':
+                case 'SE': // 'scriptEnd':
                     script.endCount++;
                     script.totalDurationForComplete = script.totalDurationForComplete + (log.t - script.beginCurrent);
                     script.endTsFirst = Math.min(log.t, (script.endTsFirst || Number.MAX_SAFE_INTEGER));
@@ -479,7 +480,7 @@ class Logger {
                     summary.endTsLast = Math.max(log.t, (summary.endTsLast || Number.MIN_SAFE_INTEGER));
                     shouldAdd = true;
                     break;
-                case 'error':
+                case 'E': //'error':
                     script.errorCount++;
                     script.totalDurationForError = script.totalDurationForError + (log.t - script.beginCurrent);
                     script.errorTsFirst = Math.min(log.t, (script.errorTsFirst || Number.MAX_SAFE_INTEGER));
@@ -489,13 +490,13 @@ class Logger {
             }
             if (shouldAdd) {
                 if (
-                    log.m !== 'setup' &&
-                    log.m !== 'stats' &&
-                    !scripts[log.m]
+                    scriptName !== 'setup' &&
+                    scriptName !== 'stats' &&
+                    !scripts[scriptName]
                 ) {
-                    scriptsSequence.push(log.m);
+                    scriptsSequence.push(scriptName);
                 }
-                scripts[log.m] = script;
+                scripts[scriptName] = script;
             }
         });
 
