@@ -90,6 +90,11 @@ class Logger {
         }
     }
 
+    /**
+     * Generates a random hexadecimal string for use as an anonymous ID in logging
+     * @param {Number} length number of chars needed
+     * @returns a string of specified length
+     */
     static generateAnonId(length) {
         const numBytes = Math.ceil(length / 2);
         const randomBytes = crypto.randomBytes(numBytes);
