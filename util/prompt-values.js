@@ -45,9 +45,6 @@ async function promptUser() {
         }
     }
 
-    console.log('env', env);
-    console.log('configJson', logger.configJson);
-
     await logger.loggerJumpToFileLine(FILE_PATHS.configJson);
     await logger.loggerJumpToFileLine(FILE_PATHS.dotEnv);
 

@@ -12,10 +12,8 @@ class Debounce {
         const now = Date.now();
         if (this.#lastCallThroughTs + this.#minInterval <= now) {
             this.#lastCallThroughTs = now;
-            console.log('debounce: allow');
             return true;
         }
-        console.log('debounce: skip');
         return false;
     }
 }
